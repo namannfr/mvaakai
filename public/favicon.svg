@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" fill="none" role="img" aria-label="Mvaak"><title>Mvaak</title>
+  <rect width="72" height="72" rx="16" fill="#07111F"/>
+  <g transform="translate(12.96,12.96) scale(0.64)"><rect x="0" y="16" width="8" height="40" rx="4" fill="#5D84FF"/>
+  <rect x="16" y="8" width="8" height="56" rx="4" fill="#5D84FF"/>
+  <rect x="32" y="0" width="8" height="72" rx="4" fill="#5D84FF"/>
+  <rect x="48" y="8" width="8" height="56" rx="4" fill="#5D84FF"/>
+  <rect x="64" y="16" width="8" height="40" rx="4" fill="#5D84FF"/></g>
+</svg>

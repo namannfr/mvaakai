@@ -1,0 +1,927 @@
+[
+  {
+    "slug": "what-makes-training-data-usable",
+    "title": "What actually makes training data usable",
+    "description": "Volume is the easiest property to measure and the least predictive of whether a dataset improves a model. Here is what tends to matter instead.",
+    "category": "Dataset Quality",
+    "date": "2026-08-19",
+    "readingTime": 3,
+    "blocks": [
+      {
+        "type": "p",
+        "text": "Ask most teams how big their dataset is and you will get an immediate answer. Ask what fraction of it covers the cases the model currently gets wrong, and the room goes quiet. That asymmetry is the whole problem in miniature: we measure the property that is easy to count rather than the one that determines whether training improves anything."
+      },
+      {
+        "type": "p",
+        "text": "Row count is not meaningless. Below a certain floor, no amount of care compensates for having too few examples. But past that floor, the returns fall off sharply, and the properties that keep mattering are harder to put on a slide."
+      },
+      {
+        "type": "h2",
+        "text": "Coverage beats volume"
+      },
+      {
+        "type": "p",
+        "text": "A dataset's value is concentrated in the examples that sit near the model's decision boundary. Ten thousand more instances of a case the model already handles at high confidence teach it almost nothing. A few hundred instances of a case it currently fails can move a metric visibly."
+      },
+      {
+        "type": "p",
+        "text": "This is why error analysis should precede collection rather than follow it. Look at what the model gets wrong, characterise those failures into groups, and treat each group as a collection target. The resulting dataset is smaller, more expensive per row, and considerably more useful."
+      },
+      {
+        "type": "h2",
+        "text": "Consistency beats precision"
+      },
+      {
+        "type": "p",
+        "text": "Given a choice between annotations that are individually excellent but variable in their interpretation, and annotations that are slightly conservative but applied identically every time, take the second. A model learns the rule that was actually followed. If that rule shifts halfway through the corpus, the model learns the inconsistency too, and its behaviour near the boundary becomes unpredictable."
+      },
+      {
+        "type": "p",
+        "text": "The practical implication is that annotator agreement is a more useful early signal than annotator accuracy. Accuracy is measured against a ground truth you may not have. Agreement is measurable from day one, and disagreement points directly at whichever definition is underspecified."
+      },
+      {
+        "type": "h2",
+        "text": "The failure cases have to be in there"
+      },
+      {
+        "type": "p",
+        "text": "Datasets tend to be assembled from clean examples because clean examples are easier to collect, easier to annotate and easier to agree on. The result is a corpus that flatters the model in evaluation and disappoints in deployment, because deployment is where the noise, occlusion, accents and ambiguity live."
+      },
+      {
+        "type": "p",
+        "text": "If a condition will occur in production, it belongs in training. The alternative is a model whose confidence is calibrated to a world it will never see."
+      },
+      {
+        "type": "h2",
+        "text": "Structure has to match the pipeline"
+      },
+      {
+        "type": "p",
+        "text": "A surprising amount of dataset value is lost at handover. Labels arrive in a schema that has to be transformed, timestamps sit at a different granularity than the model consumes, identifiers do not survive the conversion. None of this is a data quality problem in the usual sense, and all of it costs the same engineering time as one."
+      },
+      {
+        "type": "callout",
+        "title": "The cheapest thing you can do",
+        "text": "Agree the output schema before annotation starts, not after. It costs one conversation and removes an entire class of rework."
+      },
+      {
+        "type": "h2",
+        "text": "A workable test"
+      },
+      {
+        "type": "p",
+        "text": "Before committing to volume, take a small sample through the entire path — collection, annotation, review, delivery, and an actual training run. Not a pilot in the marketing sense, but a genuine end-to-end pass on a few hundred examples."
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Did two annotators agree, and where exactly did they not?",
+          "Did the delivered structure load without transformation?",
+          "Did the model's behaviour change in the direction you expected?",
+          "Which cases were escalated, and was the guideline updated to cover them?"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "Every one of those questions is cheaper to answer at three hundred examples than at thirty thousand. The teams that ask them early tend to be the ones whose second batch looks like their first."
+      },
+      {
+        "type": "h2",
+        "text": "Provenance is part of quality"
+      },
+      {
+        "type": "p",
+        "text": "A dataset you cannot explain is a dataset you cannot defend. Where each example came from, under what consent, and which guideline version it was annotated against are not administrative details — they determine whether the corpus can be extended, audited, or used at all in a regulated context."
+      },
+      {
+        "type": "p",
+        "text": "This becomes acute the moment something goes wrong. If a model behaves oddly on a particular class and nobody can reconstruct how those examples were labelled or by whom, the investigation stops at guesswork."
+      }
+    ]
+  },
+  {
+    "slug": "annotation-guidelines-are-the-real-deliverable",
+    "title": "Annotation guidelines are the real deliverable",
+    "description": "Two annotators disagreeing about the same example is not a training problem. It is a definitions problem, and it is far cheaper to solve before collection than after.",
+    "category": "Data Annotation",
+    "date": "2026-08-04",
+    "readingTime": 3,
+    "blocks": [
+      {
+        "type": "p",
+        "text": "There is a moment on most annotation projects where someone notices that two people have labelled the same example differently. The instinct is to treat this as a quality incident — someone was careless, retrain them, move on. Almost always it is something else: the guideline did not actually say what to do, and two reasonable people filled the gap differently."
+      },
+      {
+        "type": "quote",
+        "text": "Disagreement is rarely a people problem. It is usually the schema telling you it is underspecified."
+      },
+      {
+        "type": "h2",
+        "text": "What a guideline is for"
+      },
+      {
+        "type": "p",
+        "text": "A guideline is not a training document. It is the specification of what correct means for this dataset, in enough detail that two people who have never met produce the same output on the same input. That is a high bar, and most guidelines fail it not through vagueness in the obvious cases but through silence on the awkward ones."
+      },
+      {
+        "type": "p",
+        "text": "The obvious cases write themselves. Nobody needs instruction on whether a clearly visible car is a car. The guideline earns its cost on the third of examples where something is partly hidden, partly ambiguous, or sits between two categories."
+      },
+      {
+        "type": "h2",
+        "text": "Write it from the edge cases inward"
+      },
+      {
+        "type": "p",
+        "text": "A guideline written from first principles tends to describe the ideal case at length and the difficult ones not at all. A better method is to annotate a small sample first, deliberately surface the disagreements, and write the document around those."
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Take one or two hundred examples that are representative, not easy",
+          "Have two people annotate them independently, with no discussion",
+          "List every disagreement and resolve each one explicitly",
+          "Write the resolution into the guideline as a worked example, not a rule in the abstract",
+          "Re-run on fresh examples until disagreement is rare and boring"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "This feels slow. It replaces a week of guideline-writing with two weeks of guideline-writing and sample annotation. It also removes the far more expensive alternative, which is discovering the ambiguity at volume and re-annotating."
+      },
+      {
+        "type": "h2",
+        "text": "Worked examples beat prose"
+      },
+      {
+        "type": "p",
+        "text": "\"Include the full extent of the object including occluded portions where they can be reasonably inferred\" is a sentence that will produce three different behaviours. Two annotated images — one showing what to do, one showing what not to do — will produce one."
+      },
+      {
+        "type": "p",
+        "text": "Where a rule is hard to state, show it. Where a rule has an exception, show the exception next to the rule rather than in a separate section nobody reads."
+      },
+      {
+        "type": "h2",
+        "text": "It should ship with the data"
+      },
+      {
+        "type": "p",
+        "text": "A dataset delivered without its guideline is difficult to extend and impossible to audit. Six months later, when someone wants to add a category or investigate why the model behaves oddly on a particular case, the only record of what the labels meant is the labels themselves."
+      },
+      {
+        "type": "callout",
+        "title": "A test worth applying",
+        "text": "Could a competent annotator who has never spoken to your team produce your dataset from the guideline alone? If not, the guideline is incomplete — and the missing part currently lives in somebody's head."
+      },
+      {
+        "type": "p",
+        "text": "Treating the guideline as part of the deliverable changes how it gets written. It stops being internal scaffolding and becomes an artefact that has to stand on its own — which is exactly the property that makes a dataset extensible."
+      },
+      {
+        "type": "h2",
+        "text": "Version it like code"
+      },
+      {
+        "type": "p",
+        "text": "A guideline changes during a project — that is a sign it is working. The problem is that examples annotated under version one and version three are not interchangeable, and nothing in the data itself records which rule applied."
+      },
+      {
+        "type": "p",
+        "text": "Stamping each batch with the guideline version it was produced under costs nothing at the time and is the only thing that makes selective re-annotation possible later. Without it, the choice on discovering a mistake is to redo everything or to live with an inconsistency you cannot locate."
+      },
+      {
+        "type": "h2",
+        "text": "Who should write it"
+      },
+      {
+        "type": "p",
+        "text": "Guidelines written entirely by the team who will train the model tend to be conceptually clean and operationally impossible — they assume knowledge the annotator does not have. Guidelines written entirely by the annotation team tend to be practical and subtly misaligned with what the model needs."
+      },
+      {
+        "type": "p",
+        "text": "The version that works is drafted by whoever understands the model, tested by whoever will apply it, and revised until the second group stops asking the first group questions."
+      }
+    ]
+  },
+  {
+    "slug": "why-first-person-video-is-different",
+    "title": "Why first-person video is a different kind of input",
+    "description": "Egocentric footage preserves attention, approach and sequence — spatial context that third-person capture quietly discards.",
+    "category": "Multimodal AI",
+    "date": "2026-07-15",
+    "readingTime": 3,
+    "blocks": [
+      {
+        "type": "p",
+        "text": "Most video datasets are recorded from the outside: a camera on a tripod, watching a person do something. That framing is convenient and it is how film has always worked. It also throws away most of what a system learning to act in physical space actually needs."
+      },
+      {
+        "type": "h2",
+        "text": "The viewpoint problem"
+      },
+      {
+        "type": "p",
+        "text": "A robot arm, a wearable assistant or a heads-up system sees the world from roughly where a person's eyes or hands are. If it is trained on footage recorded from six feet away and to one side, it has to learn a transformation between the viewpoint it was taught in and the viewpoint it operates in — a transformation nobody supervised and which the training data gives it no reason to get right."
+      },
+      {
+        "type": "p",
+        "text": "First-person capture removes that gap rather than asking the model to bridge it. The camera is roughly where the system will be. The scale, the occlusion by one's own hands, the way objects enter frame from below — all of it matches."
+      },
+      {
+        "type": "h2",
+        "text": "Hands and objects stay in one relationship"
+      },
+      {
+        "type": "p",
+        "text": "Watch someone pick up a mug from across the room and you see a person and a mug. Watch it from their own perspective and you see the approach, the orientation of the hand as it adjusts to the handle, the moment of contact, the shift in grip as weight transfers."
+      },
+      {
+        "type": "p",
+        "text": "That sequence is the actual content of manipulation. From the outside, most of it is occluded by the person's own body. From the inside, it is the centre of the frame."
+      },
+      {
+        "type": "h2",
+        "text": "Sequence survives"
+      },
+      {
+        "type": "p",
+        "text": "Real tasks are not clean. People reach for the wrong thing, correct themselves, pause to check, do steps out of order because the order did not matter. Continuous first-person recording preserves that structure. Clipped third-person footage tends to flatten it into a set of tidy segments, because clipping is where the mess gets removed."
+      },
+      {
+        "type": "callout",
+        "title": "Why this matters for annotation",
+        "text": "Hesitation and correction are signal, not noise. A dataset that removes them teaches a model that tasks proceed smoothly — which is exactly the assumption that breaks in deployment."
+      },
+      {
+        "type": "h2",
+        "text": "What it costs"
+      },
+      {
+        "type": "p",
+        "text": "Egocentric capture is harder than pointing a camera at someone. It requires participants willing to wear a device, consent handled properly because the camera sees whatever they see, and collection planned around tasks rather than around scenes."
+      },
+      {
+        "type": "p",
+        "text": "It also demands more of annotation. Continuous footage has to be segmented into steps and sub-actions, hand-object interactions have to be marked, and the environment has to be described well enough that a model can be tested on unseen settings."
+      },
+      {
+        "type": "h2",
+        "text": "When it is worth it"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "The system will operate from a body-mounted or hand-adjacent viewpoint",
+          "The task involves manipulation rather than observation",
+          "You care about the order and structure of a procedure, not just its outcome",
+          "You need the model to generalise to environments it has not seen"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "If none of those apply, conventional footage is cheaper and sufficient. If two or more do, third-person video is probably teaching your model to solve a different problem than the one it will face."
+      },
+      {
+        "type": "h2",
+        "text": "Annotation looks different too"
+      },
+      {
+        "type": "p",
+        "text": "Third-person footage is usually annotated spatially: what is in the frame and where. Egocentric footage is mostly annotated temporally: what is happening, in what order, and where one sub-action ends and the next begins."
+      },
+      {
+        "type": "p",
+        "text": "That shift changes where disagreement appears. Annotators rarely argue about whether a hand is present. They argue constantly about whether reaching for an object is part of picking it up or a step of its own — which is a question the guideline has to answer, not the annotator."
+      },
+      {
+        "type": "h2",
+        "text": "Consent is not a formality here"
+      },
+      {
+        "type": "p",
+        "text": "A worn camera records whatever its wearer sees, which includes rooms, documents and other people who never agreed to anything. That makes consent and scope genuine design constraints rather than paperwork: what is in shot, where recording is allowed to happen, and what gets discarded before annotation begins."
+      },
+      {
+        "type": "p",
+        "text": "Handling this properly is also what makes the dataset usable commercially. A corpus with unclear provenance is a liability that surfaces at exactly the wrong moment."
+      }
+    ]
+  },
+  {
+    "slug": "the-occlusion-problem-in-video-annotation",
+    "title": "Occlusion is where video datasets quietly break",
+    "description": "Most annotator disagreement in video happens when an object is partly hidden. Deciding that once, in writing, is what keeps a track coherent.",
+    "category": "Computer Vision",
+    "date": "2026-06-28",
+    "readingTime": 3,
+    "blocks": [
+      {
+        "type": "p",
+        "text": "Bounding a fully visible object is not difficult, and it is not where video annotation goes wrong. The trouble starts the moment something passes in front of it."
+      },
+      {
+        "type": "h2",
+        "text": "Three defensible answers, one dataset"
+      },
+      {
+        "type": "p",
+        "text": "When a car is half behind a lamp post, an annotator has to choose. Box only the visible pixels? Box the full extent including the hidden part, inferred? Split into two boxes? Drop the frame entirely?"
+      },
+      {
+        "type": "p",
+        "text": "Every one of those is defensible. That is precisely the problem — in the absence of a written rule, different people pick different answers, and often the same person picks differently on a tired afternoon. The model then learns a boundary definition that shifts unpredictably with occlusion, which is the exact condition it most needs to handle."
+      },
+      {
+        "type": "h2",
+        "text": "Identity across the gap"
+      },
+      {
+        "type": "p",
+        "text": "The second decision is harder. An object leaves frame, or is fully hidden for twenty frames, then reappears. Is it the same track?"
+      },
+      {
+        "type": "p",
+        "text": "This is not a question about the world. It is a question about what you want the model to learn. If re-identification matters, the track should persist and the gap should be marked. If it does not, a new identity is cleaner. Either is fine. What is not fine is annotators deciding case by case, which produces tracks that fragment for reasons no model can infer."
+      },
+      {
+        "type": "callout",
+        "title": "Write down the threshold",
+        "text": "\"A track survives an occlusion of up to N frames\" is an arbitrary rule. It is also unambiguous, checkable in review, and infinitely better than leaving it to judgement."
+      },
+      {
+        "type": "h2",
+        "text": "Consistency over precision"
+      },
+      {
+        "type": "p",
+        "text": "There is a persistent instinct to make each individual box as tight as possible. It is the wrong optimisation. A box drawn two pixels loose every single time is a rule the model can learn. A box drawn tight on Monday and loose on Thursday is noise dressed up as precision."
+      },
+      {
+        "type": "h2",
+        "text": "Review has to look across frames"
+      },
+      {
+        "type": "p",
+        "text": "Frame-level review misses the entire class of problems described above. Every individual frame can look correct while the sequence is incoherent — a track that drifts, an identity that swaps, a boundary definition that tightens as the annotator gets more confident."
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Review sequences, not sampled frames",
+          "Check identity continuity across every occlusion event",
+          "Watch for boundary drift over the length of a long clip",
+          "Confirm that tracks end for a stated reason, not because attention lapsed"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "None of this is exotic. It is the difference between a dataset that trains a tracker and one that trains a detector which happens to have been applied to video."
+      },
+      {
+        "type": "h2",
+        "text": "Small objects and motion blur"
+      },
+      {
+        "type": "p",
+        "text": "Two adjacent problems produce the same kind of silent inconsistency. Below some size, an object is a few ambiguous pixels and different annotators will disagree about whether it is there at all. Under fast motion, the boundary genuinely is not a boundary."
+      },
+      {
+        "type": "p",
+        "text": "Both need an explicit rule. A minimum size below which objects are not annotated is arbitrary but checkable; leaving it to judgement produces a dataset where small-object recall is essentially random."
+      },
+      {
+        "type": "h2",
+        "text": "Interpolation is not free"
+      },
+      {
+        "type": "p",
+        "text": "Most annotation tools will interpolate boxes between keyframes, and it saves a great deal of time. It also produces confident-looking annotations on frames nobody examined, which drift whenever motion is non-linear."
+      },
+      {
+        "type": "p",
+        "text": "Interpolation is fine as a starting point and a problem as a deliverable. The rule worth setting is how far apart keyframes may be given the motion in the clip, and that reviewers check interpolated frames rather than only the ones a human placed."
+      },
+      {
+        "type": "h2",
+        "text": "What to specify before annotation starts"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Visible-pixels or full-extent boxing under occlusion, with a worked example of each",
+          "The occlusion duration after which a track ends rather than persists",
+          "A minimum object size, in pixels, below which objects are not annotated",
+          "Whether truncation at the frame edge is treated the same as occlusion",
+          "Maximum keyframe spacing, and whether interpolated frames are reviewed"
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "transcription-conventions-decide-the-ceiling",
+    "title": "Transcription conventions decide your model's ceiling",
+    "description": "How you write numbers, hesitation and overlap is not a detail. It is a decision the entire corpus inherits, and changing it later means starting again.",
+    "category": "Speech AI",
+    "date": "2026-06-10",
+    "readingTime": 3,
+    "blocks": [
+      {
+        "type": "p",
+        "text": "Speech projects tend to treat transcription as a solved input: get the words down accurately and move on to the modelling. But \"the words\" is doing a lot of work in that sentence, and the decisions hiding inside it shape everything downstream."
+      },
+      {
+        "type": "h2",
+        "text": "The questions nobody asks early enough"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Is it \"twenty twenty six\", \"2026\", or both depending on context?",
+          "Do you transcribe \"um\" and \"uh\", or remove them?",
+          "When two people talk at once, is that one segment or two?",
+          "Does a false start get written, or silently corrected?",
+          "How is an unintelligible passage marked — and is it marked at all?"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "Each has a reasonable answer. None has a universally correct one. What matters is that the answer is decided once, written down, and applied to every hour of the corpus."
+      },
+      {
+        "type": "h2",
+        "text": "Why the cost of changing is so high"
+      },
+      {
+        "type": "p",
+        "text": "Change a convention halfway through and you do not have one dataset with a minor inconsistency. You have two datasets that disagree, and a model that will learn the disagreement as though it were signal. The only real remedy is re-transcribing everything produced under the old convention."
+      },
+      {
+        "type": "p",
+        "text": "This is why conventions belong in the specification phase alongside the model design, not in an onboarding document written after transcription has begun."
+      },
+      {
+        "type": "h2",
+        "text": "Timing is half the deliverable"
+      },
+      {
+        "type": "p",
+        "text": "An accurate transcript with loose timestamps is one of the most common reasons a technically correct dataset trains poorly. Alignment between audio and text is what lets a model associate sound with meaning; if segment boundaries wander by a few hundred milliseconds, that association degrades in ways that are difficult to diagnose later."
+      },
+      {
+        "type": "p",
+        "text": "Decide the granularity your model consumes — segment, utterance or word — and specify the tolerance. \"Roughly aligned\" is not a specification."
+      },
+      {
+        "type": "h2",
+        "text": "Clean audio is the wrong target"
+      },
+      {
+        "type": "p",
+        "text": "There is a strong pull toward collecting and keeping only clear recordings. Background noise, crosstalk and heavy accents are harder to transcribe, produce more disagreement, and make quality metrics look worse."
+      },
+      {
+        "type": "callout",
+        "title": "The trade you are actually making",
+        "text": "Excluding difficult audio improves your dataset's apparent quality and lowers your model's real-world accuracy. Those conditions are what deployment consists of."
+      },
+      {
+        "type": "p",
+        "text": "The better approach is to keep the difficult material and be explicit about how it is handled: mark unintelligible spans rather than guessing, label overlap rather than discarding it, and let the model see the conditions it will meet."
+      },
+      {
+        "type": "h2",
+        "text": "Verbatim or clean read"
+      },
+      {
+        "type": "p",
+        "text": "This is the single largest fork, and it should be decided by what the model is for. A system that has to handle spontaneous speech needs the disfluencies, repetitions and self-corrections that a clean-read transcript removes. A system summarising meetings mostly does not."
+      },
+      {
+        "type": "p",
+        "text": "The failure is not choosing wrong. It is choosing implicitly — letting each transcriber decide how much to tidy, which produces a corpus that is neither and teaches the model that hesitation is sometimes worth modelling and sometimes not."
+      },
+      {
+        "type": "h2",
+        "text": "Speaker labels have to be stable"
+      },
+      {
+        "type": "p",
+        "text": "Within a single recording, speaker one must be the same person from the first minute to the last. Across a corpus, whether speaker one means anything at all is a separate decision — usually it should not, unless you are deliberately building speaker-linked data."
+      },
+      {
+        "type": "p",
+        "text": "Getting this wrong is easy and quiet. Labels reset per file, a transcriber swaps them halfway through a long session, and a diarisation model learns from identities that do not hold."
+      },
+      {
+        "type": "h2",
+        "text": "Specify these before recording"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Verbatim or clean read, with examples of each on the same passage",
+          "Number, date and currency formatting",
+          "How overlapping speech is segmented and attributed",
+          "The marker for unintelligible audio, and how much context is required before guessing",
+          "Timestamp granularity and the tolerance you will accept"
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "when-annotators-disagree-the-schema-is-wrong",
+    "title": "When annotators disagree, look at the schema first",
+    "description": "Persistent disagreement on the same kind of example is almost never carelessness. It is a label set that cannot be applied consistently.",
+    "category": "NLP",
+    "date": "2026-05-22",
+    "readingTime": 2,
+    "blocks": [
+      {
+        "type": "p",
+        "text": "Text annotation has a particular failure mode: the task looks easy enough that nobody specifies it carefully, and the disagreement that follows gets attributed to annotator quality rather than to the label set."
+      },
+      {
+        "type": "h2",
+        "text": "Random disagreement versus structured disagreement"
+      },
+      {
+        "type": "p",
+        "text": "The distinction matters more than the overall agreement number. Disagreement scattered evenly across a corpus usually does indicate attention or training problems. Disagreement concentrated on one kind of example indicates something else entirely: the schema does not cover that case."
+      },
+      {
+        "type": "p",
+        "text": "So the first diagnostic is not \"how much did they disagree\" but \"where\". Group the disagreements. If a cluster appears, you have found an underspecified definition, not a careless annotator."
+      },
+      {
+        "type": "h2",
+        "text": "Boundaries are decisions"
+      },
+      {
+        "type": "p",
+        "text": "Consider tagging an organisation in \"the former Bank of England governor\". Does the entity include \"the\"? Does it include \"former\"? Is \"Bank of England governor\" a role rather than an organisation?"
+      },
+      {
+        "type": "p",
+        "text": "There is no fact of the matter. There is only a decision, and the decision changes what the model learns about span boundaries. Left to individual judgement, it changes per annotator — and the model learns an average of several incompatible rules."
+      },
+      {
+        "type": "h2",
+        "text": "The middle carries the weight"
+      },
+      {
+        "type": "quote",
+        "text": "Clear examples teach a model little it could not have inferred. The examples between two labels are where a dataset earns its cost."
+      },
+      {
+        "type": "p",
+        "text": "This has a practical consequence for how guidelines are written. Most of the document should be about the awkward middle. If your guideline spends its length carefully defining the categories and one paragraph on exceptions, it is inverted."
+      },
+      {
+        "type": "h2",
+        "text": "Escalate rather than guess"
+      },
+      {
+        "type": "p",
+        "text": "An annotator who encounters a genuinely ambiguous example has two options: make a judgement call and move on, or flag it. The first is faster and produces a dataset with invisible inconsistency. The second is slower and produces a schema that improves."
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Make flagging cheap — a single field, not a separate process",
+          "Resolve flags in batches so decisions are made consistently",
+          "Write each resolution into the guideline as a worked example",
+          "Re-annotate the affected examples rather than leaving the old decision in place"
+        ]
+      },
+      {
+        "type": "callout",
+        "title": "What to report at delivery",
+        "text": "Agreement figures and the list of cases that were escalated. Both tell your team where the schema strained — which is exactly where the model will be least reliable."
+      },
+      {
+        "type": "h2",
+        "text": "The other-category trap"
+      },
+      {
+        "type": "p",
+        "text": "Almost every schema grows a catch-all: other, miscellaneous, unclear. It is genuinely useful, and it is also where evidence goes to hide. Examples that should have prompted a new category get filed under other, agreement looks healthy, and the gap in the label set never surfaces."
+      },
+      {
+        "type": "p",
+        "text": "The fix is to treat that category as a queue rather than a destination. Review what accumulates in it periodically; if a coherent group appears, it has earned a label of its own."
+      },
+      {
+        "type": "h2",
+        "text": "Ambiguity in the source, not the schema"
+      },
+      {
+        "type": "p",
+        "text": "Some examples are genuinely ambiguous — a sentence that two fluent readers understand differently, a message whose sentiment depends on context nobody has. No schema resolves those, and forcing a single label onto them teaches the model a confidence the data does not support."
+      },
+      {
+        "type": "p",
+        "text": "Better to mark them. An explicit ambiguous flag lets you exclude them from training, keep them for evaluation, or model the uncertainty deliberately. All three are defensible. Silently picking one label is not."
+      }
+    ]
+  },
+  {
+    "slug": "synthetic-data-is-a-complement",
+    "title": "Synthetic data is a complement, not a replacement",
+    "description": "Generated data is genuinely useful for coverage and for privacy-constrained domains. It is not a substitute for the real-world anchor.",
+    "category": "Generative AI",
+    "date": "2026-04-30",
+    "readingTime": 2,
+    "blocks": [
+      {
+        "type": "p",
+        "text": "The argument for synthetic data is straightforward and largely correct: it is fast, it is cheap at the margin, it can be generated in exactly the distribution you want, and it sidesteps privacy constraints that make real data difficult to obtain in health, finance and other regulated domains."
+      },
+      {
+        "type": "p",
+        "text": "The argument gets overextended when it becomes a claim that real-world collection is a solved problem you can generate your way past."
+      },
+      {
+        "type": "h2",
+        "text": "What generation is genuinely good at"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Rare classes that are expensive to wait for in production data",
+          "Balancing a distribution that is heavily skewed",
+          "Privacy-constrained domains where the real records cannot leave a boundary",
+          "Simulation of conditions that are dangerous or impractical to stage",
+          "Rapid iteration on a schema before committing to real collection"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "In each of those, synthetic data is not a compromise. It is often the better instrument."
+      },
+      {
+        "type": "h2",
+        "text": "What it cannot do on its own"
+      },
+      {
+        "type": "p",
+        "text": "A generator produces the distribution it was taught. It reproduces the regularities of its source data faithfully — including that source's blind spots — and it does not contain information about the world that was absent from its input."
+      },
+      {
+        "type": "p",
+        "text": "The cases you most need are frequently the ones nobody anticipated. Those are, by construction, the cases a generator will not invent, because it does not know they exist. Real-world collection remains the only mechanism that introduces genuinely new information."
+      },
+      {
+        "type": "callout",
+        "title": "The compounding risk",
+        "text": "Train on generated data, generate more from that model, train again — and each cycle narrows the distribution slightly. Without a real-world anchor, quality and diversity degrade in a way that is easy to miss until it is substantial."
+      },
+      {
+        "type": "h2",
+        "text": "Blended is the normal case"
+      },
+      {
+        "type": "p",
+        "text": "In practice most teams end up somewhere sensible: real data as the anchor and the evaluation set, synthetic data for augmentation and for classes that are hard to source. The proportions vary by domain, and the important discipline is keeping the evaluation set real."
+      },
+      {
+        "type": "p",
+        "text": "If your benchmark is generated by the same process that generated your training data, it will report the model doing well at reproducing that process. That is not the same as the model working."
+      },
+      {
+        "type": "h2",
+        "text": "A useful question"
+      },
+      {
+        "type": "p",
+        "text": "Before generating, ask what specifically is missing. If the answer is \"more of what we already have\", generation will help. If the answer is \"we do not know what we are missing\", it will not — that is a collection and error-analysis problem, and no generator can solve it from the inside."
+      },
+      {
+        "type": "h2",
+        "text": "Keep the evaluation set real"
+      },
+      {
+        "type": "p",
+        "text": "This is the rule worth defending hardest. If both training and evaluation data come from the same generator, the benchmark measures how well the model reproduces that generator — which will look excellent and tell you almost nothing about deployment."
+      },
+      {
+        "type": "p",
+        "text": "A real held-out set, however small, is what keeps the number honest. It is also usually the cheapest part of a data budget, because evaluation sets do not need to be large. They need to be representative."
+      },
+      {
+        "type": "h2",
+        "text": "Label the origin"
+      },
+      {
+        "type": "p",
+        "text": "Every example should record whether it was collected or generated, and if generated, by what process and version. Without that field, the ratio of real to synthetic drifts silently across batches and nobody can reconstruct which model saw what."
+      },
+      {
+        "type": "p",
+        "text": "It also makes ablation possible. The question of whether the synthetic portion is helping is answerable in an afternoon if the provenance is recorded, and effectively unanswerable if it is not."
+      }
+    ]
+  },
+  {
+    "slug": "how-to-scope-a-first-dataset",
+    "title": "How to scope a first dataset",
+    "description": "The most common mistake is committing to volume before the specification has been tested. A small end-to-end pass costs less and tells you more.",
+    "category": "AI Data",
+    "date": "2026-03-18",
+    "readingTime": 3,
+    "blocks": [
+      {
+        "type": "p",
+        "text": "Most first datasets are scoped by working backwards from a number — a budget, a row count someone quoted, a figure from a paper. That is understandable and it is the wrong starting point, because it fixes the one variable you should be discovering."
+      },
+      {
+        "type": "h2",
+        "text": "Start from the failure, not the volume"
+      },
+      {
+        "type": "p",
+        "text": "If a model already exists, its errors are the specification. Sample them, group them, and describe each group precisely enough that someone could go and collect examples of it. That list is your dataset scope."
+      },
+      {
+        "type": "p",
+        "text": "If no model exists yet, the equivalent exercise is to describe the situations the system must handle and be honest about which of them you have no data for. The gaps are the scope."
+      },
+      {
+        "type": "h2",
+        "text": "Test the specification before the volume"
+      },
+      {
+        "type": "p",
+        "text": "A few hundred examples taken through the entire path — collection, annotation, review, delivery, and a real training run — will surface almost every problem that a large batch would, at a fraction of the cost."
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Whether the label set can be applied consistently by two people",
+          "Whether the delivered structure loads without transformation",
+          "Whether the annotation effort per example matches the estimate",
+          "Whether the model moves in the expected direction"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "Any one of those coming back negative changes the plan. Discovering it at three hundred examples is a scheduling adjustment. Discovering it at thirty thousand is a write-off."
+      },
+      {
+        "type": "h2",
+        "text": "Decide the output format first"
+      },
+      {
+        "type": "p",
+        "text": "This sounds administrative and it removes an entire category of rework. Agree the schema, the identifiers, the timestamp granularity and the file structure before annotation begins, and delivery becomes a handover rather than a translation exercise."
+      },
+      {
+        "type": "h2",
+        "text": "Budget for rejection"
+      },
+      {
+        "type": "p",
+        "text": "Some proportion of collected data will not meet the specification. That is normal and it should be planned for rather than treated as a failure. A project that has not rejected anything has usually not been checking."
+      },
+      {
+        "type": "callout",
+        "title": "The question to ask a vendor",
+        "text": "Not \"how many can you do\" but \"what happens when two of your annotators disagree\". The answer tells you whether quality is a process or a promise."
+      },
+      {
+        "type": "h2",
+        "text": "Plan the second batch into the first"
+      },
+      {
+        "type": "p",
+        "text": "The first batch's real output is not just data. It is a corrected guideline, a measured cost per example, and a clearer picture of which cases matter. Scope the engagement so that learning has somewhere to go, rather than treating the specification as fixed once signed."
+      },
+      {
+        "type": "h2",
+        "text": "Agree what rejected means"
+      },
+      {
+        "type": "p",
+        "text": "Rejection only functions as a quality mechanism if both sides agreed in advance what would trigger it. Otherwise it becomes a negotiation at delivery, where the party who wants to be paid and the party who wants the data argue about a standard neither wrote down."
+      },
+      {
+        "type": "p",
+        "text": "The acceptance definition should be specific enough to check: what makes an example unusable, what proportion of a batch may fail before the batch is returned, and who arbitrates. Written before work starts, this is a paragraph. Written afterwards, it is a dispute."
+      },
+      {
+        "type": "h2",
+        "text": "Common ways a first dataset goes wrong"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Scoped by budget rather than by the failures it is meant to fix",
+          "Volume committed before two annotators have agreed on a hundred examples",
+          "Output schema settled after annotation, producing a transformation step nobody costed",
+          "Difficult examples excluded because they slowed the pipeline down",
+          "No provenance recorded, so the second batch cannot be compared to the first"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "None of these are exotic mistakes. They are all the result of treating the first dataset as a procurement exercise rather than an experiment whose main output is a better specification."
+      }
+    ]
+  },
+  {
+    "slug": "inter-annotator-agreement-what-it-tells-you",
+    "title": "Inter-annotator agreement, and what it actually tells you",
+    "description": "A single agreement score is a weak summary of a rich signal. What matters is where the disagreement sits and whether it is structured.",
+    "category": "Dataset Quality",
+    "date": "2026-02-11",
+    "readingTime": 3,
+    "blocks": [
+      {
+        "type": "p",
+        "text": "Inter-annotator agreement is the closest thing dataset work has to a universal quality metric, which is exactly why it gets misused. A single number gets quoted, a threshold gets set, and the far more informative structure underneath it goes unexamined."
+      },
+      {
+        "type": "h2",
+        "text": "It measures the schema as much as the people"
+      },
+      {
+        "type": "p",
+        "text": "Low agreement is routinely read as an annotator problem. Sometimes it is. More often it means the label set cannot be applied consistently, which is a property of the schema and not of the people applying it."
+      },
+      {
+        "type": "p",
+        "text": "The useful reframing: agreement measures how well-specified your task is. Treated that way, a low score early in a project is not bad news. It is a map of what to fix."
+      },
+      {
+        "type": "h2",
+        "text": "Look at the distribution, not the average"
+      },
+      {
+        "type": "p",
+        "text": "Two projects can report the same overall agreement and be in completely different states. In one, disagreement is spread thinly across everything — a training or attention issue. In the other, agreement is near-perfect except on one category where it collapses — a definitional issue affecting a specific, fixable part of the schema."
+      },
+      {
+        "type": "callout",
+        "title": "Always break it down by class",
+        "text": "An aggregate score hides the single most actionable fact in the measurement: which category your annotators cannot agree on."
+      },
+      {
+        "type": "h2",
+        "text": "High agreement is not automatically good"
+      },
+      {
+        "type": "p",
+        "text": "Agreement can be high for uninteresting reasons. If one label covers ninety percent of examples, two annotators who both default to it will agree most of the time while telling you nothing about the cases that matter. Chance-corrected measures help, but the more direct check is to look at agreement on the minority classes specifically."
+      },
+      {
+        "type": "p",
+        "text": "Agreement can also be high because annotators have converged socially — sitting together, resolving cases by discussion, drifting toward a shared interpretation that is not written anywhere. That produces a consistent dataset and an unwritable guideline, and it stops working the moment a new annotator joins."
+      },
+      {
+        "type": "h2",
+        "text": "Measure it more than once"
+      },
+      {
+        "type": "p",
+        "text": "Agreement measured once at the start of a project tells you about the guideline as it was then. Definitions drift, new edge cases appear, annotators get faster and more confident in ways that are not always improvements."
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Take an agreement sample at the start, and again at intervals through the work",
+          "Break results down by class and by annotator",
+          "Investigate structured disagreement as a schema problem first",
+          "Report the figures at delivery, alongside the escalated cases"
+        ]
+      },
+      {
+        "type": "p",
+        "text": "Done that way, agreement stops being a gate to pass and becomes what it is genuinely good for: a continuous read on whether the definition still holds."
+      },
+      {
+        "type": "h2",
+        "text": "Which measure, and why it matters less than people think"
+      },
+      {
+        "type": "p",
+        "text": "Raw percentage agreement is easy to explain and overstates performance when one class dominates. Chance-corrected measures adjust for that and become unstable when a class is very rare. For span-level or bounding-box tasks, neither applies cleanly and an overlap-based measure is more informative."
+      },
+      {
+        "type": "p",
+        "text": "Choose one, state it, and keep it. The comparison that matters is against your own earlier measurements on the same task, not against a threshold borrowed from a different domain."
+      },
+      {
+        "type": "h2",
+        "text": "Adjudication is where the value is"
+      },
+      {
+        "type": "p",
+        "text": "Measuring agreement and then discarding the disagreements wastes most of the exercise. Those examples are a ready-made list of the places your definition is weakest."
+      },
+      {
+        "type": "p",
+        "text": "Work through them deliberately: decide each one, write the decision into the guideline as a worked example, and re-annotate anything already affected. Done consistently, the agreement figure rises for the right reason — the task got clearer, not the annotators more compliant."
+      }
+    ]
+  }
+]
