@@ -1,6 +1,5 @@
 import { ButtonLink } from "@/components/ui/button";
-import { CaptureFrame } from "@/components/visuals/capture-frame";
-import { DemoRecord } from "@/components/visuals/demo-record";
+import Image from "next/image";
 
 export function Hero() {
   return (
@@ -19,24 +18,31 @@ export function Hero() {
             <ButtonLink href="/contact" size="lg" arrow trackAs="hero_discuss_project">
               Discuss a Project
             </ButtonLink>
-            <ButtonLink href="#data-example" size="lg" variant="outline-light" trackAs="hero_explore_data">
+            <ButtonLink href="/solutions/physical-ai#data-example" size="lg" variant="outline-light" trackAs="hero_explore_data">
               Explore Our Data
             </ButtonLink>
           </div>
+          <p className="mt-8 text-sm text-on-navy-muted">
+            For robotics &amp; Physical AI · computer vision · speech &amp; voice AI · NLP &amp; LLM data
+          </p>
         </div>
 
         <div className="relative">
-          <figure className="overflow-hidden rounded-[1.25rem] border border-navy-line-strong bg-navy-3">
-            <CaptureFrame
-              scene="cup"
-              uid="hero"
-              episode="ep_0142"
+          <figure className="overflow-hidden rounded-[1.25rem] border border-navy-line-strong bg-navy-3 shadow-[0_30px_60px_-30px_rgb(0_0_0/0.6)]">
+            <Image
+              src="/images/egocentric/ego-cup.jpg"
+              alt="First-person view of two hands picking up a ceramic cup on a stone kitchen counter, annotated with the time span 00:04.2 to 00:05.8, the object, the action Reach, Grasp, Lift, and a Reviewed status."
+              width={879}
+              height={476}
+              preload
+              sizes="(min-width: 1280px) 40rem, (min-width: 1024px) 52vw, 100vw"
               className="block h-auto w-full"
-              title="First-person view of a hand reaching to pick up a ceramic cup, with hand keypoints and the cup marked by a labelled bounding box."
             />
-            <figcaption className="sr-only">Illustrative first-person demonstration frame.</figcaption>
           </figure>
-          <DemoRecord className="relative mt-4 sm:ml-auto sm:w-[22rem] lg:-mt-10 lg:mr-[-1.5rem]" />
+          <p className="mt-3 flex items-center gap-2 font-mono text-[0.6875rem] tracking-[0.12em] text-on-navy-muted uppercase">
+            <span aria-hidden className="size-1.5 rounded-full bg-brand-light" />
+            Illustrative egocentric frame · hand–object interaction
+          </p>
         </div>
       </div>
     </section>

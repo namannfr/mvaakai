@@ -62,7 +62,7 @@ function renderText(lead: Lead, submittedAt: string) {
 function renderHtml(lead: Lead, submittedAt: string) {
   const sections = lead.sections
     .map(
-      (s) => `<h3 style="font:600 13px/1.4 system-ui;letter-spacing:.08em;text-transform:uppercase;color:#4a6b0e;margin:24px 0 8px">${escapeHtml(s.heading)}</h3>
+      (s) => `<h3 style="font:600 13px/1.4 system-ui;letter-spacing:.08em;text-transform:uppercase;color:#315bea;margin:24px 0 8px">${escapeHtml(s.heading)}</h3>
 <table style="border-collapse:collapse;width:100%;font:14px/1.5 system-ui;color:#0b1220">${s.rows
         .map(
           ([k, v]) =>

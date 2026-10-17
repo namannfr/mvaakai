@@ -295,7 +295,7 @@ export function InquiryForm() {
             label="Engagement model"
             hint={
               <>
-                See <Link href="/#engagement-models" className="text-accent underline underline-offset-2">the four models</Link>.
+                See <Link href="/services#engagement-models" className="text-accent underline underline-offset-2">the four models</Link>.
               </>
             }
             options={engagementOptions}

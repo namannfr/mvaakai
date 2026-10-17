@@ -65,7 +65,7 @@ export function AnnotationCompare({ dark = true }: { dark?: boolean }) {
             className={cn(
               "min-h-10 flex-1 rounded-full px-3 text-[0.8125rem] font-medium transition-colors sm:flex-none sm:px-4",
               view === v.id
-                ? "bg-lime text-ink"
+                ? "bg-accent text-white"
                 : dark
                   ? "text-on-navy-muted hover:text-white focus-visible:outline-white"
                   : "text-muted hover:text-ink",

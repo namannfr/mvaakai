@@ -36,7 +36,7 @@ const tabs: { id: string; label: string; text: string; example: ReactNode }[] = 
         <ul className={cn(mono, "space-y-1.5")}>
           {["session_0031/", "  ep_0142_rgb.mp4", "  ep_0142_imu.csv", "  ep_0143_rgb.mp4", "  ep_0143_imu.csv"].map((f) => (
             <li key={f} className="flex items-center gap-2 whitespace-pre">
-              {f.endsWith("/") ? <Folder aria-hidden className="size-3.5 text-lime" /> : <FileVideo aria-hidden className="size-3.5 text-lime" />}
+              {f.endsWith("/") ? <Folder aria-hidden className="size-3.5 text-brand-light" /> : <FileVideo aria-hidden className="size-3.5 text-brand-light" />}
               {f}
             </li>
           ))}
@@ -120,13 +120,13 @@ const tabs: { id: string; label: string; text: string; example: ReactNode }[] = 
         <p className="text-sm text-on-navy-muted">Formats described in Mvaak’s materials:</p>
         <ul className="mt-3 flex flex-wrap gap-2">
           {deliveryFormats.map((f) => (
-            <li key={f} className="rounded-full bg-lime/15 px-3 py-1 font-mono text-xs text-lime">
+            <li key={f} className="rounded-full bg-brand-light/15 px-3 py-1 font-mono text-xs text-brand-light">
               {f}
             </li>
           ))}
         </ul>
         <div className={cn(mono, "mt-4 flex items-center gap-2 text-on-navy-muted")}>
-          <FileJson aria-hidden className="size-3.5 text-lime" /> manifest.json travels with every episode
+          <FileJson aria-hidden className="size-3.5 text-brand-light" /> manifest.json travels with every episode
         </div>
       </Card>
     ),
@@ -168,10 +168,10 @@ export function DeliverablesExplorer() {
               onKeyDown={(e) => onKeyDown(e, i)}
               className={cn(
                 "flex min-h-11 shrink-0 items-center gap-3 rounded-xl border px-4 text-left text-[0.9375rem] font-medium whitespace-nowrap transition-colors lg:whitespace-normal",
-                selected ? "border-ink bg-ink text-white" : "border-line bg-surface text-ink-2 hover:border-line-strong",
+                selected ? "border-accent bg-accent text-white" : "border-line bg-surface text-ink-2 hover:border-line-strong",
               )}
             >
-              <span aria-hidden className={cn("hidden h-5 w-1 rounded-full lg:block", selected ? "bg-lime" : "bg-transparent")} />
+              <span aria-hidden className={cn("hidden h-5 w-1 rounded-full lg:block", selected ? "bg-brand-light" : "bg-transparent")} />
               {tab.label}
             </button>
           );

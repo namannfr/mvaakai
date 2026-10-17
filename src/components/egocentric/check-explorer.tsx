@@ -41,10 +41,10 @@ export function CheckExplorer() {
               onKeyDown={(e) => onKeyDown(e, i)}
               className={cn(
                 "flex min-h-12 items-center gap-3 rounded-xl border px-4 py-2.5 text-left text-[0.9375rem] font-medium transition-colors",
-                selected ? "border-ink bg-ink text-white" : "border-line bg-surface text-ink hover:border-line-strong",
+                selected ? "border-accent bg-accent text-white" : "border-line bg-surface text-ink hover:border-line-strong",
               )}
             >
-              <ShieldCheck aria-hidden className={cn("size-4 shrink-0", selected ? "text-lime" : "text-steel")} />
+              <ShieldCheck aria-hidden className={cn("size-4 shrink-0", selected ? "text-brand-light" : "text-steel")} />
               {q.title}
             </button>
           );

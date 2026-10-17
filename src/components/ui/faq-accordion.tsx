@@ -48,7 +48,7 @@ export function FaqAccordion({ items, dark = false }: { items: { q: string; a: R
                     expanded && "rotate-45",
                     dark
                       ? "border-navy-line-strong text-brand-light"
-                      : cn("border-line-strong text-accent", expanded && "border-ink bg-ink text-lime"),
+                      : cn("border-line-strong text-accent", expanded && "border-accent bg-accent text-white"),
                   )}
                 >
                   <Plus className="size-3.5" />

@@ -56,10 +56,10 @@ export function SectionNav({ items, label = "On this page" }: { items: { id: str
                 aria-current={current ? "location" : undefined}
                 className={cn(
                   "inline-flex min-h-9 items-center rounded-full px-3.5 text-sm whitespace-nowrap transition-colors",
-                  current ? "bg-ink font-medium text-white" : "text-muted hover:bg-subtle hover:text-ink",
+                  current ? "bg-accent font-medium text-white" : "text-muted hover:bg-subtle hover:text-ink",
                 )}
               >
-                {current && <span aria-hidden className="mr-2 size-1.5 rounded-full bg-lime" />}
+                {current && <span aria-hidden className="mr-2 size-1.5 rounded-full bg-brand-light" />}
                 {it.label}
               </a>
             </li>

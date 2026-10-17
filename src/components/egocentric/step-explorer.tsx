@@ -6,7 +6,7 @@ import { cn } from "@/components/ui/cn";
 type Step = { title: string; what: string; needs: string; output: string };
 
 /**
- * Selectable workflow: a connected row of steps with a lime progress line, and a
+ * Selectable workflow: a connected row of steps with a blue progress line, and a
  * detail panel (what happens / what's required / what follows) for the active step.
  */
 export function StepExplorer({ steps, label }: { steps: Step[]; label: string }) {
@@ -31,7 +31,7 @@ export function StepExplorer({ steps, label }: { steps: Step[]; label: string })
       <div className="relative">
         {/* connecting line + animated progress */}
         <div aria-hidden className="absolute top-5 right-[calc(100%/var(--n)/2)] left-[calc(100%/var(--n)/2)] h-px bg-navy-line-strong" style={{ ["--n" as string]: steps.length }}>
-          <div className="h-full bg-lime transition-[width] duration-500 ease-out" style={{ width: `${pct}%` }} />
+          <div className="h-full bg-brand-light transition-[width] duration-500 ease-out" style={{ width: `${pct}%` }} />
         </div>
         <div role="tablist" aria-label={label} className="relative grid gap-1" style={{ gridTemplateColumns: `repeat(${steps.length}, minmax(0, 1fr))` }}>
           {steps.map((step, i) => {
@@ -51,15 +51,15 @@ export function StepExplorer({ steps, label }: { steps: Step[]; label: string })
                 tabIndex={selected ? 0 : -1}
                 onClick={() => setActive(i)}
                 onKeyDown={(e) => onKeyDown(e, i)}
-                className="group flex flex-col items-center gap-2 rounded-xl px-1 pb-1 text-center focus-visible:outline-lime"
+                className="group flex flex-col items-center gap-2 rounded-xl px-1 pb-1 text-center focus-visible:outline-accent"
               >
                 <span
                   className={cn(
                     "relative z-10 flex size-10 items-center justify-center rounded-full border font-mono text-sm transition-colors duration-300",
                     selected
-                      ? "border-lime bg-lime text-ink"
+                      ? "border-brand-light bg-accent text-white"
                       : done
-                        ? "border-lime/60 bg-navy-3 text-lime"
+                        ? "border-brand-light/60 bg-navy-3 text-brand-light"
                         : "border-navy-line-strong bg-navy-2 text-on-navy-muted group-hover:text-white",
                   )}
                 >
@@ -81,7 +81,7 @@ export function StepExplorer({ steps, label }: { steps: Step[]; label: string })
         key={active}
         className="mt-8 animate-reveal rounded-[1.25rem] border border-navy-line bg-navy-2 p-5 sm:p-8"
       >
-        <p className="font-mono text-xs tracking-[0.14em] text-lime uppercase">
+        <p className="font-mono text-xs tracking-[0.14em] text-brand-light uppercase">
           Step {active + 1} of {steps.length}
         </p>
         <h3 className="mt-2 text-2xl font-semibold tracking-tight text-white">{s.title}</h3>

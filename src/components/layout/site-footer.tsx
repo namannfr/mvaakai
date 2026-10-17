@@ -1,13 +1,15 @@
 import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
+import { SocialLinks } from "@/components/brand/social-links";
 import { site } from "@/config/site";
 
 const columns = [
   {
     title: "Services",
     links: [
-      { label: "Egocentric Video Data", href: "/services/egocentric-video-data" },
+      { label: "Egocentric Video Data Collection", href: "/services/egocentric-video-data" },
+      { label: "Robotics & Physical AI", href: "/solutions/physical-ai" },
       { label: "Audio Data", href: "/services/audio-annotated-data" },
       { label: "Video Annotation", href: "/services/video-annotated-data" },
       { label: "Text Annotation", href: "/services/text-annotated-data" },
@@ -18,6 +20,7 @@ const columns = [
     title: "Company",
     links: [
       { label: "About", href: "/about" },
+      { label: "Recognition", href: "/about#recognition" },
       { label: "Insights", href: "/blog" },
       { label: "Partnerships", href: "/partnerships" },
       { label: "Privacy notice", href: "/privacy" },
@@ -69,6 +72,7 @@ export function SiteFooter() {
                 </span>
               </li>
             </ul>
+            <SocialLinks className="mt-6" />
           </div>
           <div className="grid gap-10 sm:grid-cols-3">
             {columns.map((col) => (

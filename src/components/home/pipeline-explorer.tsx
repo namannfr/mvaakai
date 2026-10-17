@@ -100,7 +100,7 @@ export function PipelineExplorer() {
                   className={cn(
                     "relative z-10 flex size-11 items-center justify-center rounded-full border font-mono text-sm transition-colors duration-300",
                     selected
-                      ? "border-lime bg-lime text-ink"
+                      ? "border-brand-light bg-accent text-white"
                       : done
                         ? "border-brand-light/60 bg-navy-3 text-brand-light"
                         : "border-navy-line-strong bg-navy-2 text-on-navy-muted group-hover:border-brand-light/60 group-hover:text-white",

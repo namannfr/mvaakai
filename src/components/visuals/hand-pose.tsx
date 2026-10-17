@@ -59,7 +59,7 @@ export function handKeypoints({ x, y, scale, rotate = 0, left = false, curl = 0 
 
 export function HandSkeleton({
   pose,
-  color = "#c5f467",
+  color = "#5b82ff",
   jointColor = "#ffffff",
   strokeWidth = 2.25,
   radius = 3,

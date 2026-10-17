@@ -15,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page("/services", 0.9),
     page("/services/egocentric-video-data", 0.9),
     ...dataTypePages.map((p) => page(`/services/${p.slug}`, 0.7)),
+    page("/solutions/physical-ai", 0.8),
     page("/partnerships", 0.8),
     page("/about", 0.6),
     page("/contact", 0.7),

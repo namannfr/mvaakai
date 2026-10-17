@@ -75,6 +75,8 @@ export type EnvironmentOption = {
   /** true = domain described in Mvaak's materials; false = availability confirmed in scoping. */
   inMaterials: boolean;
   scene?: "household" | "commercial" | "agricultural" | "cup";
+  /** Illustrative photograph, used in place of the drawn scene. */
+  photo?: { src: string; alt: string };
 };
 
 export const environmentOptions: EnvironmentOption[] = [
@@ -100,6 +102,10 @@ export const environmentOptions: EnvironmentOption[] = [
     summary: "Operational settings with equipment and multi-step procedures.",
     tasks: ["Equipment interaction", "Multi-step operational tasks", "Tool handling"],
     inMaterials: false,
+    photo: {
+      src: "/images/egocentric/ego-screwdriver.jpg",
+      alt: "First-person view of gloved hands tightening a screw on an industrial machine panel, with the screwdriver marked by a labelled bounding box and the action timestamped.",
+    },
   },
   {
     id: "warehouse",

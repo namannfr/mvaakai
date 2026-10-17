@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 import { Section, SectionHeader } from "@/components/ui/section";
-import { CaptureFrame } from "@/components/visuals/capture-frame";
+import Image from "next/image";
 
 /** Small, purpose-built visuals that show each capability rather than describe it. */
 function EgoVisual() {
   return (
-    <div className="h-full overflow-hidden rounded-lg bg-navy">
-      <CaptureFrame scene="cup" uid="wwd-ego" showHud={false} className="h-full w-full object-cover" title="First-person frame of a hand reaching for a cup." />
+    <div className="relative h-full overflow-hidden rounded-lg bg-navy">
+      <Image src="/images/egocentric/ego-screwdriver.jpg" alt="" fill sizes="(min-width: 1024px) 18rem, (min-width: 640px) 45vw, 90vw" className="object-cover" />
     </div>
   );
 }
@@ -45,11 +45,11 @@ function AnnotationVisual() {
     <div className="flex h-full flex-col justify-center gap-3 rounded-lg bg-subtle p-4">
       <div className="relative h-12 rounded-md border border-line bg-surface">
         <span className="absolute top-2 left-[38%] h-7 w-[26%] rounded-sm border-2 border-dashed border-accent" />
-        <span className="absolute -top-2 left-[38%] rounded bg-ink px-1 font-mono text-[0.625rem] text-lime">obj_01</span>
+        <span className="absolute -top-2 left-[38%] rounded bg-ink px-1 font-mono text-[0.625rem] text-brand-light">obj_01</span>
       </div>
       <div className="flex h-5 gap-0.5 overflow-hidden rounded">
         {segs.map((s, i) => (
-          <span key={s.l} style={{ flexBasis: `${s.w}%` }} className={`flex items-center justify-center font-mono text-[0.625rem] ${i === 1 ? "bg-ink text-lime" : "bg-accent-soft text-accent"}`}>
+          <span key={s.l} style={{ flexBasis: `${s.w}%` }} className={`flex items-center justify-center font-mono text-[0.625rem] ${i === 1 ? "bg-navy text-white" : "bg-accent-soft text-accent"}`}>
             {s.l}
           </span>
         ))}

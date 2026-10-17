@@ -55,7 +55,7 @@ export default function EgocentricDataCollectionPage() {
           <Breadcrumbs dark items={[{ label: "Services", href: "/services" }, { label: "Egocentric Data Collection" }]} />
           <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-14">
             <div className="max-w-xl">
-              <p className="font-mono text-xs tracking-[0.14em] text-lime uppercase">Egocentric Data Collection</p>
+              <p className="font-mono text-xs tracking-[0.14em] text-brand-light uppercase">Egocentric Data Collection</p>
               <h1 id="ego-title" className="mt-5 text-h1 font-semibold text-balance text-white">
                 First-person human demonstrations for robots that need to operate in the real world.
               </h1>
@@ -130,7 +130,7 @@ export default function EgocentricDataCollectionPage() {
         <div className="mt-6 grid gap-4 md:grid-cols-2">
           <div data-reveal className="rounded-[1.25rem] border border-ink bg-surface p-6">
             <div className="flex items-center gap-3">
-              <span className="inline-flex size-9 items-center justify-center rounded-lg bg-ink text-lime">
+              <span className="inline-flex size-9 items-center justify-center rounded-lg bg-navy text-white">
                 <PackageCheck aria-hidden className="size-5" />
               </span>
               <h3 className="text-lg font-semibold text-ink">Standard deliverables</h3>
@@ -208,12 +208,12 @@ export default function EgocentricDataCollectionPage() {
       <Section id="scope" labelledBy="scope-title">
         <div className="grid gap-8 overflow-hidden rounded-[1.5rem] bg-ink p-6 text-on-navy sm:p-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-14 lg:p-14">
           <div>
-            <p className="font-mono text-xs tracking-[0.14em] text-lime uppercase">Scope a collection project</p>
+            <p className="font-mono text-xs tracking-[0.14em] text-brand-light uppercase">Scope a collection project</p>
             <h2 id="scope-title" className="mt-4 text-h2 font-semibold text-balance text-white">
               Start with the task you need your AI to learn.
             </h2>
             <p className="mt-5 flex gap-3 rounded-xl border border-navy-line bg-navy-3 p-4 text-on-navy">
-              <Lightbulb aria-hidden className="mt-0.5 size-5 shrink-0 text-lime" />
+              <Lightbulb aria-hidden className="mt-0.5 size-5 shrink-0 text-brand-light" />
               Not sure about the technical details? Describe the task and we can identify the requirements to discuss.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -239,7 +239,7 @@ export default function EgocentricDataCollectionPage() {
                 "Expected delivery format",
               ].map((f) => (
                 <li key={f} className="flex items-center gap-2.5 rounded-lg border border-navy-line bg-navy-3 px-3 py-2.5 text-sm text-on-navy">
-                  <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-lime" />
+                  <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-brand-light" />
                   {f}
                 </li>
               ))}
@@ -264,7 +264,7 @@ export default function EgocentricDataCollectionPage() {
       <section aria-labelledby="ego-final-title" className="relative overflow-hidden bg-navy text-on-navy">
         <div aria-hidden className="bg-grid-dark absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]" />
         <div className="container-page relative py-[var(--spacing-section)] text-center">
-          <span aria-hidden className="mx-auto block h-1 w-12 rounded-full bg-lime" />
+          <span aria-hidden className="mx-auto block h-1 w-12 rounded-full bg-brand-light" />
           <h2 id="ego-final-title" className="mx-auto mt-6 max-w-3xl text-h2 font-semibold text-balance text-white">
             Have a real-world task in mind?
           </h2>

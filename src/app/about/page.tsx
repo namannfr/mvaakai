@@ -3,7 +3,10 @@ import { Section, SectionHeader } from "@/components/ui/section";
 import { ButtonLink, TextLink } from "@/components/ui/button";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Institutions } from "@/components/shared/institutions";
+import { BackedBy } from "@/components/shared/backed-by";
+import { Recognition } from "@/components/shared/recognition";
 import { ContactCta } from "@/components/shared/contact-cta";
+import { FounderProfile } from "@/components/about/founder-profile";
 import { capacity, credentials, site } from "@/config/site";
 import { pageMetadata } from "@/lib/metadata";
 
@@ -60,6 +63,8 @@ export default function AboutPage() {
           </div>
         </div>
       </Section>
+
+      <FounderProfile />
 
       <Section tone="surface" bordered labelledBy="beliefs-title">
         <SectionHeader id="beliefs-title" eyebrow="Why we focus on AI data" title="AI quality begins with data quality."  />
@@ -124,7 +129,7 @@ export default function AboutPage() {
               provenance are part of how collection is run.
             </p>
             <div className="mt-6">
-              <TextLink href="/#quality" trackAs="about_quality">
+              <TextLink href="/solutions/physical-ai#quality" trackAs="about_quality">
                 How quality and governance work
               </TextLink>
             </div>
@@ -138,6 +143,15 @@ export default function AboutPage() {
             ))}
           </ul>
         </div>
+      </Section>
+
+      <Section id="recognition" tone="surface" bordered labelledBy="recognition-heading">
+        <SectionHeader id="recognition-heading" eyebrow="Recognition" title="Institutional support and recognition." />
+        <div data-reveal className="mt-10 rounded-card border border-line bg-canvas p-6 sm:p-8">
+          <BackedBy />
+          <p className="mt-6 border-t border-line pt-4 text-sm text-muted">Mvaak’s service materials also list MIT, NTU Singapore and SMU.</p>
+        </div>
+        <Recognition className="mt-14" />
       </Section>
 
       <Section tone="subtle" bordered labelledBy="presence-title">

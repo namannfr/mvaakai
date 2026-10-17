@@ -2,6 +2,7 @@ import { Section, SectionHeader } from "@/components/ui/section";
 import { ButtonLink } from "@/components/ui/button";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { SectionNav } from "@/components/ui/section-nav";
+import { EngagementModels } from "@/components/home/engagement-models";
 import { Bullets } from "@/components/ui/bullets";
 import { ContactCta } from "@/components/shared/contact-cta";
 import { TrackView } from "@/components/analytics/track-view";
@@ -124,6 +125,8 @@ export default function ServicesPage() {
         ))}
       </div>
 
+
+      <EngagementModels />
 
       <ContactCta
         title="Need a custom dataset?"

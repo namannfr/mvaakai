@@ -30,7 +30,7 @@ export function CaptureExplorer() {
             key={c.id}
             className={cn(
               "rounded-card border bg-surface transition-[border-color,box-shadow] duration-200",
-              expanded ? "border-ink shadow-[0_18px_40px_-26px_rgb(21_26_33/0.45)]" : "border-line hover:border-line-strong",
+              expanded ? "border-accent shadow-[0_18px_40px_-26px_rgb(21_26_33/0.45)]" : "border-line hover:border-line-strong",
             )}
           >
             <div className="p-5 sm:p-6">
@@ -38,7 +38,7 @@ export function CaptureExplorer() {
                 <span
                   className={cn(
                     "inline-flex size-10 items-center justify-center rounded-lg transition-colors",
-                    expanded ? "bg-ink text-lime" : "bg-subtle text-ink",
+                    expanded ? "bg-navy text-white" : "bg-subtle text-ink",
                   )}
                 >
                   <Icon aria-hidden className="size-5" />

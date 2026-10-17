@@ -28,6 +28,10 @@ export const site = {
     { city: "Singapore", country: "Singapore" },
   ],
   copyrightYear: 2026,
+  social: [
+    { name: "LinkedIn", href: "https://www.linkedin.com/company/mvaak/home/" },
+    { name: "YouTube", href: "https://youtube.com/@mvaak-ai?si=d-YpfO1lVFEIRR_f" },
+  ],
 } as const;
 
 /**
@@ -78,10 +82,52 @@ export const credentials = [
   },
 ];
 
-export const mainNav = [
-  { label: "Services", href: "/services" },
-  { label: "Egocentric Data", href: "/services/egocentric-video-data" },
-  { label: "About", href: "/about" },
-  { label: "Partnerships", href: "/partnerships" },
-  { label: "Insights", href: "/blog" },
-] as const;
+/**
+ * Header navigation. Every link points at an existing page or section — no empty
+ * pages exist just to fill a menu. Solutions map to existing service pages that
+ * already describe those applications.
+ */
+export type NavLink = { label: string; href: string; description?: string };
+export type NavGroup = { label: string; items: NavLink[]; footer?: NavLink };
+
+export const navGroups: NavGroup[] = [
+  {
+    label: "Services",
+    items: [
+      { label: "Egocentric Video Data Collection", href: "/services/egocentric-video-data", description: "First-person human demonstrations" },
+      { label: "Data Collection", href: "/services#data-collection", description: "Planned capture in real environments" },
+      { label: "Data Annotation", href: "/services#annotation", description: "Audio, video and text labelling" },
+      { label: "Quality Assurance", href: "/services#quality-assurance", description: "Checks and review before delivery" },
+      { label: "Annotation & Dataset Rescue", href: "/services#annotation-rescue", description: "Fix and label data you hold" },
+      { label: "Engagement Models", href: "/services#engagement-models", description: "Pilot sprint to dedicated cell" },
+    ],
+    footer: { label: "All services", href: "/services" },
+  },
+  {
+    label: "Solutions",
+    items: [
+      { label: "Robotics & Physical AI", href: "/solutions/physical-ai", description: "From real-world action to AI data" },
+      { label: "Computer Vision", href: "/services/video-annotated-data", description: "Detection, tracking, activity" },
+      { label: "Speech & Voice AI", href: "/services/audio-annotated-data", description: "Transcription and diarisation" },
+      { label: "NLP & LLM Data", href: "/services/text-annotated-data", description: "Classification, entities, intent" },
+    ],
+  },
+  {
+    label: "Resources",
+    items: [
+      { label: "Insights & Articles", href: "/blog", description: "Specification, annotation and quality" },
+      { label: "How to scope a first dataset", href: "/blog/how-to-scope-a-first-dataset" },
+      { label: "What makes training data usable", href: "/blog/what-makes-training-data-usable" },
+    ],
+    footer: { label: "All articles", href: "/blog" },
+  },
+  {
+    label: "About Us",
+    items: [
+      { label: "Company Overview", href: "/about", description: "Who we are and how we work" },
+      { label: "Recognition", href: "/about#recognition", description: "Institutional support and awards" },
+      { label: "Partnerships", href: "/partnerships", description: "Build real-world data projects with us" },
+      { label: "Contact", href: "/contact", description: "Start a conversation" },
+    ],
+  },
+];

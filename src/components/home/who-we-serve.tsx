@@ -21,7 +21,7 @@ export function WhoWeServe() {
         <ul className="grid gap-3 sm:grid-cols-2">
           {audiences.map((a) => (
             <li key={a.title} data-reveal className="flex gap-4 rounded-card border border-line bg-canvas p-5 transition-colors hover:border-line-strong">
-              <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-lg bg-ink text-lime">
+              <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-lg bg-navy text-white">
                 <a.icon aria-hidden className="size-5" />
               </span>
               <div>

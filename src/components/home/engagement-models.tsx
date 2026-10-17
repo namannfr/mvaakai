@@ -40,7 +40,7 @@ export function EngagementModels({ tone = "canvas" }: { tone?: "surface" | "canv
               <div className="flex items-start justify-between gap-3">
                 <p className="font-mono text-[0.6875rem] tracking-[0.12em] text-accent uppercase">{m.cadence}</p>
                 {primary && (
-                  <span className="shrink-0 rounded-full bg-ink px-2 py-0.5 text-[0.6875rem] font-medium whitespace-nowrap text-lime">Start here</span>
+                  <span className="shrink-0 rounded-full bg-ink px-2 py-0.5 text-[0.6875rem] font-medium whitespace-nowrap text-brand-light">Start here</span>
                 )}
               </div>
               <h3 className="mt-3 text-xl font-semibold tracking-tight text-balance text-ink">{m.name}</h3>

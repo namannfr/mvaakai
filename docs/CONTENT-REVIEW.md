@@ -36,6 +36,50 @@ On the site they appear under a neutral heading, **"Institutional support & asso
 - Set the wording in `src/config/site.ts` (`institutions[].relationship`), or hide an entry with `show: false`.
 - Add official logos only after written permission.
 
+### 2a. "We are backed by" logo strip (homepage, and `/about#recognition`), must confirm
+
+The client supplied a screenshot showing six logos: IIT Kanpur · IIT Kanpur Incubation & Innovation · Startup India · IndiaAI · MeitY · JSS AHER Mysuru. These logos now appear on the site, in `src/components/shared/backed-by.tsx`, with the image files in `public/images/recognition/logo-*.png`.
+
+- **The logos were cropped from that screenshot, so they are low resolution.** Replace them with the original logo files.
+- **The two sources list different backers.** The brochure lists MIT, NTU Singapore and SMU; the screenshot adds IndiaAI and JSS. Confirm which list is current.
+- **Confirm Mvaak's relationship with each organisation, and its permission to use the logo.** If any one cannot be confirmed, remove it from `backers`.
+
+### 2b. Recognition photos (homepage `#recognition`, and `/about#recognition`), must confirm
+
+The client supplied two photos, now in `public/images/recognition/award-ceremony.jpg` and `award-cheque.jpg`.
+
+- **What the photos show:** the slide reads *IndiaAI Application Development Pillar · IndiaAI Innovation Challenge · Narottam Innovations Pvt Ltd · Adaptive Learning and Detection for SLDs* and carries the **mvaak AI** logo. The cheque is made out to **Narottam Innovations Pvt Ltd**.
+- **How the site describes it:** the copy says the award went to Narottam Innovations Pvt Ltd and was presented with the mvaak AI name. It does not say that Mvaak itself received the award.
+- **To confirm:** Narottam Innovations Pvt Ltd's relationship to Mvaak (for example, the legal entity behind it), and whether the award can be presented as Mvaak's. If so, the copy can be strengthened in `src/components/shared/recognition.tsx`. If not, remove the section.
+- **Not published:** the India News screenshot. It covers TaknikAI and its founder Shivam Pal, not Mvaak, so it is not used anywhere. It can be added only if the TaknikAI–Mvaak link is confirmed and the coverage concerns Mvaak.
+
+### 2c. Video (homepage `#see-mvaak`)
+
+The site embeds YouTube video `sygn0mAgeZU`, using the privacy-enhanced `youtube-nocookie.com` player, which loads lazily. The video is titled "IndiaAI Grant Support for Mvaak, Coverage by NewsStation" on the Mvaak channel, and the section heading follows that title. Confirm that the grant wording is accurate, which ties in with 2b.
+
+### 2d. Founder profile (`/about#founder`), must confirm
+
+The client asked for Shivam Pal, Founder & Managing Director, to be featured. The profile is in `src/components/about/founder-profile.tsx`.
+
+- **The photo is cropped from a screenshot of another website's founder card, so it is low resolution.** The baked-in "Founder" label was blended out. Replace `public/images/about/founder-shivam-pal.jpg` with the original high-resolution portrait, square or close to it.
+- **There is no approved biography.** The section shows only the name, the title and one line of Mvaak's own published positioning. Supply an approved bio to replace that line.
+- **The reference statistics are deliberately left out:** 8+ years, 100+ founders mentored, $10M+ fundraising, $5M+ revenue. The sector chips (AI, SaaS, EdTech and so on) are left out too. They come from a different website and are not verified Mvaak facts; add them only with written approval and a source. The chips shown instead are Mvaak's own services.
+- **The India News / TaknikAI coverage (2b) is still unpublished.**
+
+### 2e. Homepage egocentric photos
+
+The homepage's illustrated egocentric frames have been replaced with realistic photos, cropped from the client-supplied reference composite. The image files are in `public/images/egocentric/`:
+
+| File | Where it is used |
+|---|---|
+| `ego-cup.jpg` | Hero |
+| `ego-screwdriver.jpg` | What We Do › Egocentric Data card, and the Industrial tab on `/services/egocentric-video-data` |
+| `ego-drawer.jpg` and `ego-package.jpg` | Egocentric section |
+
+- **The site labels them "Illustrative".** They carry baked-in overlays, including a session ID "MVA-0087". Confirm that they are licensed for use, and confirm whether any of them is real Mvaak footage. If one is, the "Illustrative" label can be dropped from that image.
+- **Replace them with higher-resolution originals if available.** The crops are 765–879 px wide.
+- **The inner pages still use the SVG illustration system**, as requested: `/solutions/physical-ai` and `/services/egocentric-video-data`.
+
 ## 3. Company and capacity claims (from the brochure)
 
 | Claim | Where it appears | Where to change it |

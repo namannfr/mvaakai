@@ -13,7 +13,7 @@ const ALL_LAYERS: FrameLayers = { hands: true, objects: true, labels: true };
 
 const LINE = "rgb(232 236 244 / 0.44)";
 const LINE_SOFT = "rgb(232 236 244 / 0.2)";
-const BOX = "#c5f467";
+const BOX = "#a8bcff";
 
 type SceneSpec = {
   hands: HandPose[];
@@ -264,7 +264,7 @@ export function CaptureFrame({
             <text x="616" y="29" textAnchor="end">{s.rig}</text>
             <g transform="translate(20 44)" className="transition-opacity duration-500" opacity={layers.labels ? 1 : 0}>
               <rect width={s.subAction.length * 7 + 108} height="22" rx="4" fill="rgb(7 17 31 / 0.75)" stroke="rgb(232 236 244 / 0.18)" />
-              <text x="10" y="15" fill="#c5f467">SUB-ACTION</text>
+              <text x="10" y="15" fill="#8fa8ff">SUB-ACTION</text>
               <text x="96" y="15">{s.subAction}</text>
             </g>
             <text x="616" y="59" textAnchor="end" fill="rgb(232 236 244 / 0.6)" className="transition-opacity duration-500" opacity={layers.hands ? 1 : 0}>

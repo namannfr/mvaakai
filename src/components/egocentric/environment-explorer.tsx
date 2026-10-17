@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, type KeyboardEvent } from "react";
+import Image from "next/image";
 import { CheckCircle2, Factory, Info } from "lucide-react";
 import { environmentOptions, type EnvironmentOption } from "@/content/egocentric-collection";
 import { CaptureFrame } from "@/components/visuals/capture-frame";
@@ -8,10 +9,20 @@ import { ButtonLink } from "@/components/ui/button";
 import { cn } from "@/components/ui/cn";
 
 function EnvVisual({ env }: { env: EnvironmentOption }) {
+  if (env.photo) {
+    return (
+      <figure className="relative h-full">
+        <Image src={env.photo.src} alt={env.photo.alt} fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
+        <figcaption className="absolute bottom-3 left-3 rounded-full bg-navy/75 px-2.5 py-1 font-mono text-[0.625rem] tracking-[0.12em] text-on-navy uppercase backdrop-blur-sm">
+          Illustrative
+        </figcaption>
+      </figure>
+    );
+  }
   if (!env.scene) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-3 bg-navy-3 p-6 text-center">
-        <Factory aria-hidden className="size-10 text-lime" />
+        <Factory aria-hidden className="size-10 text-brand-light" />
         <p className="font-mono text-xs tracking-[0.1em] text-on-navy-muted uppercase">Visual placeholder</p>
         <p className="max-w-xs text-sm text-on-navy-muted">Industrial example footage to be added once a project is scoped.</p>
       </div>
@@ -62,11 +73,11 @@ export function EnvironmentExplorer() {
               onKeyDown={(ev) => onKeyDown(ev, i)}
               className={cn(
                 "flex min-h-14 flex-col items-start justify-center rounded-xl border px-4 py-2.5 text-left transition-colors",
-                selected ? "border-ink bg-ink text-white" : "border-line bg-surface text-ink hover:border-line-strong",
+                selected ? "border-accent bg-accent text-white" : "border-line bg-surface text-ink hover:border-line-strong",
               )}
             >
               <span className="text-[0.9375rem] font-semibold">{e.title}</span>
-              <span className={cn("mt-0.5 text-xs", selected ? "text-lime" : "text-faint")}>
+              <span className={cn("mt-0.5 text-xs", selected ? "text-white" : "text-faint")}>
                 {e.inMaterials ? "In Mvaak’s scope" : "Confirm in scoping"}
               </span>
             </button>
@@ -112,7 +123,7 @@ export function EnvironmentExplorer() {
               arrow
               trackAs={`ego_env_${env.id}`}
             >
-              Scope a {env.title.toLowerCase()} project
+              Scope {/^[aeiou]/i.test(env.title) ? "an" : "a"} {env.title.toLowerCase()} project
             </ButtonLink>
           </div>
           <p className="mt-3 text-xs text-faint">Example tasks are illustrative, not completed projects.</p>

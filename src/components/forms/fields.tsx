@@ -265,7 +265,7 @@ export function ChoiceGroup({
                 className={cn(
                   "mt-0.5 flex size-[1.125rem] shrink-0 items-center justify-center border transition-colors",
                   multiple ? "rounded-[5px]" : "rounded-full",
-                  checked ? "border-ink bg-ink text-lime" : "border-line-strong bg-surface",
+                  checked ? "border-accent bg-accent text-white" : "border-line-strong bg-surface",
                 )}
               >
                 {checked && (multiple ? <Check className="size-3" strokeWidth={3} /> : <span className="size-1.5 rounded-full bg-white" />)}

@@ -27,7 +27,7 @@ export function DemoRecord({
             <span
               className={cn(
                 "rounded px-1.5 py-0.5",
-                i === activeAction ? "bg-ink text-lime" : "bg-accent-soft text-accent",
+                i === activeAction ? "bg-navy text-white" : "bg-accent-soft text-accent",
               )}
             >
               {a}

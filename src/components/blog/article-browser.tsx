@@ -37,7 +37,7 @@ export function ArticleBrowser({ articles, categories }: { articles: Summary[]; 
                 onClick={() => setCategory(c)}
                 className={cn(
                   "inline-flex min-h-10 items-center gap-1.5 rounded-full border px-3.5 text-sm transition-colors",
-                  active ? "border-ink bg-ink text-white" : "border-line-strong bg-surface text-ink-2 hover:border-ink/40",
+                  active ? "border-accent bg-accent text-white" : "border-line-strong bg-surface text-ink-2 hover:border-ink/40",
                 )}
               >
                 {c ?? "All"}

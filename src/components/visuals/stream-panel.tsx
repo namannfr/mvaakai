@@ -62,9 +62,9 @@ export function StreamPanel({ className, compact = false }: { className?: string
         </Row>
         <Row label="IMU">
           <svg viewBox={`0 0 ${W} 36`} preserveAspectRatio="none" className="h-full w-full" aria-hidden>
-            <polyline points={wave(0.4, 9, 2.2, 36)} fill="none" stroke="#4a6b0e" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+            <polyline points={wave(0.4, 9, 2.2, 36)} fill="none" stroke="#315bea" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
             <polyline points={wave(2.1, 7, 3.1, 36)} fill="none" stroke="#5f7290" strokeWidth="1.25" vectorEffect="non-scaling-stroke" />
-            <polyline points={wave(4.2, 5, 1.6, 36)} fill="none" stroke="#c5f467" strokeWidth="1.25" vectorEffect="non-scaling-stroke" />
+            <polyline points={wave(4.2, 5, 1.6, 36)} fill="none" stroke="#8fa8ff" strokeWidth="1.25" vectorEffect="non-scaling-stroke" />
           </svg>
         </Row>
         <Row label="Hand pose">
@@ -75,7 +75,7 @@ export function StreamPanel({ className, compact = false }: { className?: string
               const y2 = 24 + 6 * Math.sin(i * 0.38 + 1.4);
               return (
                 <g key={i}>
-                  <circle cx={x} cy={y1.toFixed(1)} r="1.6" fill="#4a6b0e" />
+                  <circle cx={x} cy={y1.toFixed(1)} r="1.6" fill="#315bea" />
                   <circle cx={x} cy={y2.toFixed(1)} r="1.6" fill="#5f7290" opacity="0.8" />
                 </g>
               );

@@ -122,7 +122,7 @@ export function AnnotatedVisual() {
       />
       <div className="grid grid-cols-3 gap-1 p-3">
         {segs.map((s, i) => (
-          <div key={s.l} className={cn("rounded-md px-2 py-1.5 text-center", i === 1 ? "bg-lime text-ink" : "bg-navy-2 text-on-navy")}>
+          <div key={s.l} className={cn("rounded-md px-2 py-1.5 text-center", i === 1 ? "bg-accent text-white" : "bg-navy-2 text-on-navy")}>
             <span className={cn(mono, "block font-medium")}>{s.l}</span>
             <span className={cn(mono, "block opacity-80")}>{s.t}s</span>
           </div>

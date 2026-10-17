@@ -7,45 +7,41 @@
  * text or sits behind white text, so contrast stays above WCAG AA.
  */
 @theme {
-  /* Midnight Slate + Lime identity */
+  /* Blue primary identity, with Midnight Slate, Off-white and Grey as supporting tones */
   /* Light surfaces */
-  --color-canvas: #f7f7f2; /* off-white */
+  --color-canvas: #f7f8f6; /* off-white */
   --color-surface: #ffffff;
-  --color-subtle: #efefea;
+  --color-subtle: #f0f2f4;
   --color-sunken: #e6e8e5; /* light grey */
 
-  /* Ink */
-  --color-ink: #151a21; /* midnight slate */
+  /* Ink — midnight slate */
+  --color-ink: #151a21;
   --color-ink-2: #2b323b;
   --color-muted: #4b5560;
-  /* Slate grey for small text: #737b84 is 4.0:1 on off-white, so small captions use a deeper slate (5.3:1). */
   --color-faint: #5f6770;
-  --color-steel: #737b84; /* slate grey: icons, large text, decoration */
+  --color-steel: #737b84; /* slate grey */
 
   --color-line: #e6e8e5;
   --color-line-strong: #cdd1cc;
 
-  /* Lime: fills only (buttons, active states) — always with midnight text, never white */
-  --color-lime: #c5f467;
-  --color-lime-strong: #b3e64f;
-  /* Logo bars and lime accents on dark surfaces (13.7:1 on midnight) */
-  --color-brand: #c5f467;
-  --color-brand-light: #c5f467;
-  /* Lime-family olive for text, links and small indicators on light surfaces (5.8:1) */
-  --color-accent: #4a6b0e;
-  --color-accent-strong: #3d5a08;
-  --color-accent-soft: #f1fadf;
-  --color-accent-line: #d7eea6;
+  /* Primary blue: logo, CTAs, links, active states (5.5:1 with white) */
+  --color-brand: #315bea;
+  /* Light blue for text and accents on dark surfaces (7.3:1 on navy) */
+  --color-brand-light: #8fa8ff;
+  --color-accent: #315bea;
+  --color-accent-strong: #2549d1;
+  --color-accent-soft: #eaf0ff;
+  --color-accent-line: #c7d5ff;
 
-  /* Midnight sections */
-  --color-navy: #151a21;
-  --color-navy-2: #0f1318;
-  --color-navy-3: #1e252e;
-  --color-navy-4: #28303a;
-  --color-navy-line: rgb(230 232 229 / 0.12);
-  --color-navy-line-strong: rgb(230 232 229 / 0.24);
-  --color-on-navy: #f7f7f2;
-  --color-on-navy-muted: #a9b0b8;
+  /* Dark sections: deep navy (blue identity); footer uses midnight slate (navy-2) */
+  --color-navy: #101d3a;
+  --color-navy-2: #151a21;
+  --color-navy-3: #1a2a4f;
+  --color-navy-4: #213462;
+  --color-navy-line: rgb(169 182 211 / 0.16);
+  --color-navy-line-strong: rgb(169 182 211 / 0.3);
+  --color-on-navy: #f1f5ff;
+  --color-on-navy-muted: #a9b6d3;
 
   --color-success: #13774a;
   --color-success-soft: #e8f5ee;

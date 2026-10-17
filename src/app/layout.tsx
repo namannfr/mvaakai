@@ -57,6 +57,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             email: site.email,
             telephone: "+91-73880-73490",
             description: site.description,
+            sameAs: site.social.map((s) => s.href.split("?")[0]),
             address: {
               "@type": "PostalAddress",
               streetAddress: "Moti Nagar",

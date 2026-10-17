@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/home/hero";
 import { WhatWeDo } from "@/components/home/what-we-do";
-import { Process } from "@/components/home/process";
-import { WhoWeServe } from "@/components/home/who-we-serve";
-import { DataExample } from "@/components/home/data-example";
-import { QualityThatMatters } from "@/components/home/quality-that-matters";
-import { EngagementModels } from "@/components/home/engagement-models";
+import { EgocentricHighlight } from "@/components/home/egocentric-highlight";
+import { VideoSection } from "@/components/home/video-section";
 import { PartnershipPreview } from "@/components/home/partnership-preview";
 import { ContactCta } from "@/components/shared/contact-cta";
+import { BackedBy } from "@/components/shared/backed-by";
+import { Recognition } from "@/components/shared/recognition";
+import { Section } from "@/components/ui/section";
 
 export const metadata: Metadata = {
   title: { absolute: "Mvaak — Real-World Data for the Next Generation of AI" },
@@ -17,21 +17,29 @@ export const metadata: Metadata = {
 };
 
 /*
- * Homepage — organised around the five buyer questions:
- * what Mvaak does (hero, services), who it serves, what data it delivers (workflow,
- * data example), why to trust it (quality), and how to start (engagement, CTA).
- * Midnight slate: hero, workflow, final CTA. Everything else stays off-white / white.
+ * Homepage — the essentials, with detail one click away via the header menus:
+ * hero → institutional backing → services → egocentric data → video → recognition →
+ * partnerships → contact. The pipeline, data example and quality detail live on
+ * /solutions/physical-ai; engagement models on /services.
  */
 export default function HomePage() {
   return (
     <>
       <Hero />
-      <WhoWeServe />
+      <section aria-label="Institutional support" className="border-b border-line bg-surface">
+        <div className="container-page py-10">
+          <BackedBy />
+        </div>
+      </section>
       <WhatWeDo />
-      <Process />
-      <DataExample />
-      <QualityThatMatters />
-      <EngagementModels />
+      <EgocentricHighlight />
+      <VideoSection />
+      <Section id="recognition" labelledBy="recognition-title" tone="canvas">
+        <p id="recognition-title" className="eyebrow">
+          Recognition
+        </p>
+        <Recognition compact className="mt-6" />
+      </Section>
       <PartnershipPreview />
       <ContactCta />
     </>
