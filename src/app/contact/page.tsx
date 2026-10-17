@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { Mail, Phone, MapPin, Users } from "lucide-react";
+import { Mail, Users } from "lucide-react";
 import { InquiryForm } from "@/components/forms/inquiry-form";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { pageMetadata } from "@/lib/metadata";
@@ -62,26 +62,20 @@ export default function ContactPage() {
               ))}
             </ol>
 
-            <ul className="mt-10 space-y-3 border-t border-line pt-8 text-[0.9375rem]">
-              <li>
-                <a href={`mailto:${site.email}`} className="inline-flex items-center gap-3 text-ink hover:text-accent">
-                  <Mail aria-hidden className="size-4 text-accent" /> {site.email}
-                </a>
-              </li>
-              <li>
-                <a href={site.phoneHref} className="inline-flex items-center gap-3 text-ink hover:text-accent">
-                  <Phone aria-hidden className="size-4 text-accent" /> {site.phoneDisplay}
-                </a>
-              </li>
-              <li className="flex items-start gap-3 text-muted">
-                <MapPin aria-hidden className="mt-1 size-4 shrink-0 text-accent" />
-                <span>
-                  {site.address.line}
-                  <br />
-                  New Delhi · Ajman · Singapore
+            <div className="mt-10 border-t border-line pt-8">
+              <h2 className="font-mono text-xs tracking-[0.14em] text-faint uppercase">Email us</h2>
+              <a
+                href={`mailto:${site.email}`}
+                className="group mt-4 flex items-center gap-4 rounded-card border border-accent-line bg-accent-soft p-5 transition-colors hover:border-accent"
+              >
+                <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-accent text-white">
+                  <Mail aria-hidden className="size-5" />
                 </span>
-              </li>
-            </ul>
+                <span className="min-w-0 text-lg font-semibold break-words text-ink group-hover:text-accent-strong sm:text-xl">
+                  {site.email}
+                </span>
+              </a>
+            </div>
 
             <div className="mt-8 flex gap-3 rounded-card border border-line bg-surface p-5">
               <Users aria-hidden className="mt-0.5 size-5 shrink-0 text-steel" />
@@ -90,7 +84,7 @@ export default function ContactPage() {
                 <Link href="/partnerships#apply" className="text-accent underline underline-offset-2">
                   partnership application
                 </Link>{" "}
-                instead — it asks the questions we need to evaluate collaborators.
+                instead.
               </p>
             </div>
           </div>

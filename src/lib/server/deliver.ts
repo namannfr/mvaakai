@@ -7,10 +7,14 @@
  *   2. Webhook (CRM, Sheets…)  LEADS_WEBHOOK_URL (+ optional LEADS_WEBHOOK_SECRET)
  *   3. Local JSONL file        LEADS_LOCAL_DIR — for local development and
  *                              self-hosted servers with persistent disks only.
+ *   4. Google Sheets           Contact Us leads only (see contact-sheet.ts). When enabled it
+ *                              is the record of truth: the lead succeeds only if the sheet
+ *                              confirms the write, and the other channels then run as copies.
  */
 import { createHmac } from "node:crypto";
 import { appendFile, mkdir } from "node:fs/promises";
 import path from "node:path";
+import { appendContactLead, contactSheetUrl, type ContactSheetRow } from "./contact-sheet";
 
 export type LeadKind = "inquiry" | "partnership";
 
@@ -23,12 +27,16 @@ export type Lead = {
   sections: { heading: string; rows: [string, string][] }[];
   /** Validated payload, forwarded as-is to webhooks and the local store. */
   data: Record<string, unknown>;
+  /** Contact Us leads: the row sent to the Contact Leads spreadsheet. */
+  sheet?: ContactSheetRow;
 };
 
 type Channel = "email" | "webhook" | "local";
+type Delivered = Channel | "sheets";
 
 const env = (k: string) => process.env[k]?.trim() || undefined;
 
+/** Channels other than Google Sheets (which applies to Contact Us leads only). */
 export function configuredChannels(): Channel[] {
   const channels: Channel[] = [];
   if (env("RESEND_API_KEY") && env("LEADS_FROM_EMAIL")) channels.push("email");
@@ -116,13 +124,24 @@ async function storeLocally(lead: Lead, submittedAt: string) {
 }
 
 export type DeliveryResult =
-  | { status: "delivered"; channels: Channel[] }
+  | { status: "delivered"; channels: Delivered[] }
   | { status: "not_configured" }
   | { status: "failed"; errors: string[] };
 
 export async function deliverLead(lead: Lead, submittedAt: string): Promise<DeliveryResult> {
   const channels = configuredChannels();
-  if (channels.length === 0) return { status: "not_configured" };
+  const useSheet = !!lead.sheet && !!contactSheetUrl();
+  if (channels.length === 0 && !useSheet) return { status: "not_configured" };
+
+  if (useSheet) {
+    try {
+      await appendContactLead(lead.sheet!);
+    } catch (e) {
+      const error = `sheets: ${e instanceof Error ? e.message : String(e)}`;
+      console.error(`[leads] ${lead.kind} ${lead.id} delivery errors:`, [error]);
+      return { status: "failed", errors: [error] };
+    }
+  }
 
   const run: Record<Channel, () => Promise<void>> = {
     email: () => sendEmail(lead, submittedAt),
@@ -131,7 +150,7 @@ export async function deliverLead(lead: Lead, submittedAt: string): Promise<Deli
   };
 
   const results = await Promise.allSettled(channels.map((c) => run[c]()));
-  const delivered = channels.filter((_, i) => results[i].status === "fulfilled");
+  const delivered: Delivered[] = [...(useSheet ? (["sheets"] as const) : []), ...channels.filter((_, i) => results[i].status === "fulfilled")];
   const errors = results.flatMap((r, i) =>
     r.status === "rejected" ? [`${channels[i]}: ${r.reason instanceof Error ? r.reason.message : String(r.reason)}`] : [],
   );

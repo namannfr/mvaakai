@@ -1,4 +1,3 @@
-import { Globe, Phone } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import { site } from "@/config/site";
 
@@ -33,16 +32,6 @@ export function ContactCta({
               {site.email}
             </ButtonLink>
           </div>
-          <ul className="mt-10 flex flex-wrap justify-center gap-x-8 gap-y-3 text-[0.9375rem] text-on-navy-muted">
-            <li>
-              <a href={site.phoneHref} className="inline-flex items-center gap-2 hover:text-white">
-                <Phone aria-hidden className="size-4 text-brand-light" /> {site.phoneDisplay}
-              </a>
-            </li>
-            <li className="inline-flex items-center gap-2">
-              <Globe aria-hidden className="size-4 text-brand-light" /> mvaak.com
-            </li>
-          </ul>
         </div>
       </div>
     </section>

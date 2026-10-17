@@ -7,11 +7,33 @@ import { ArrowRight, ChevronDown, Menu, X } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { ButtonLink } from "@/components/ui/button";
 import { cn } from "@/components/ui/cn";
-import { navGroups, site, type NavGroup } from "@/config/site";
+import { isNavGroup, mainNav, site, type NavGroup, type NavLink } from "@/config/site";
 
 const pathOf = (href: string) => href.split("#")[0];
 const groupActive = (pathname: string, g: NavGroup) =>
   g.items.some((it) => pathOf(it.href) !== "/" && (pathname === pathOf(it.href) || pathname.startsWith(`${pathOf(it.href)}/`)));
+
+const linkActive = (pathname: string, href: string) => (href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`));
+
+/** Desktop top-level link (Home, About Us, Partner Us). */
+function TopLink({ link, pathname }: { link: NavLink; pathname: string }) {
+  const active = linkActive(pathname, link.href);
+  return (
+    <li>
+      <Link
+        href={link.href}
+        aria-current={active ? "page" : undefined}
+        className={cn(
+          "relative inline-flex min-h-10 items-center rounded-full px-3.5 text-[0.9375rem] transition-colors",
+          active ? "text-ink" : "text-muted hover:text-ink",
+        )}
+      >
+        {link.label}
+        {active && <span aria-hidden className="absolute inset-x-3.5 -bottom-[17px] h-0.5 rounded-full bg-accent" />}
+      </Link>
+    </li>
+  );
+}
 
 /** Desktop dropdown: opens on hover or click, stays open while the pointer moves into the panel. */
 function NavDropdown({
@@ -157,10 +179,6 @@ export function SiteHeader() {
   const toggleRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  const onPartnerships = pathname.startsWith("/partnerships");
-  const cta = onPartnerships
-    ? { label: "Apply to Partner", href: "/partnerships#apply", track: "header_apply_partner" }
-    : { label: "Contact Us", href: "/contact", track: "header_contact" };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -235,35 +253,27 @@ export function SiteHeader() {
 
         <nav aria-label="Main" className="hidden lg:block">
           <ul className="flex items-center gap-0.5">
-            <li>
-              <Link
-                href="/"
-                aria-current={pathname === "/" ? "page" : undefined}
-                className={cn(
-                  "relative inline-flex min-h-10 items-center rounded-full px-3.5 text-[0.9375rem] transition-colors",
-                  pathname === "/" ? "text-ink" : "text-muted hover:text-ink",
-                )}
-              >
-                Home
-                {pathname === "/" && <span aria-hidden className="absolute inset-x-3.5 -bottom-[17px] h-0.5 rounded-full bg-accent" />}
-              </Link>
-            </li>
-            {navGroups.map((g) => (
-              <NavDropdown
-                key={g.label}
-                group={g}
-                open={openGroup === g.label}
-                onOpen={() => setOpenGroup(g.label)}
-                onClose={() => setOpenGroup((cur) => (cur === g.label ? null : cur))}
-                active={groupActive(pathname, g)}
-              />
-            ))}
+            <TopLink link={{ label: "Home", href: "/" }} pathname={pathname} />
+            {mainNav.map((e) =>
+              isNavGroup(e) ? (
+                <NavDropdown
+                  key={e.label}
+                  group={e}
+                  open={openGroup === e.label}
+                  onOpen={() => setOpenGroup(e.label)}
+                  onClose={() => setOpenGroup((cur) => (cur === e.label ? null : cur))}
+                  active={groupActive(pathname, e)}
+                />
+              ) : (
+                <TopLink key={e.href} link={e} pathname={pathname} />
+              ),
+            )}
           </ul>
         </nav>
 
         <div className="flex items-center gap-2">
-          <ButtonLink href={cta.href} trackAs={cta.track} className="max-sm:hidden">
-            {cta.label}
+          <ButtonLink href="/contact" trackAs="header_contact" className="max-sm:hidden">
+            Contact Us
           </ButtonLink>
           <button
             ref={toggleRef}
@@ -287,7 +297,20 @@ export function SiteHeader() {
                 Home
               </Link>
             </li>
-            {navGroups.map((g) => {
+            {mainNav.map((g) => {
+              if (!isNavGroup(g)) {
+                return (
+                  <li key={g.href}>
+                    <Link
+                      href={g.href}
+                      aria-current={linkActive(pathname, g.href) ? "page" : undefined}
+                      className="flex min-h-14 items-center text-lg font-medium text-ink"
+                    >
+                      {g.label}
+                    </Link>
+                  </li>
+                );
+              }
               const expanded = mobileGroup === g.label;
               const sid = `m-${g.label.toLowerCase().replace(/\s+/g, "-")}`;
               return (
@@ -324,17 +347,10 @@ export function SiteHeader() {
             <ButtonLink href="/contact" size="lg" trackAs="mobile_menu_contact">
               Contact Us
             </ButtonLink>
-            <ButtonLink href="/partnerships#apply" size="lg" variant="secondary" trackAs="mobile_menu_apply_partner">
-              Apply to Partner
-            </ButtonLink>
           </div>
           <p className="mt-auto pt-10 text-sm text-muted">
             <a href={`mailto:${site.email}`} className="text-ink underline-offset-4 hover:underline">
               {site.email}
-            </a>
-            <span className="mx-2 text-faint">·</span>
-            <a href={site.phoneHref} className="text-ink underline-offset-4 hover:underline">
-              {site.phoneDisplay}
             </a>
           </p>
         </nav>

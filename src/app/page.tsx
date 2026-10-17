@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/home/hero";
-import { WhatWeDo } from "@/components/home/what-we-do";
+import { SolutionsOverview } from "@/components/home/solutions-overview";
 import { EgocentricHighlight } from "@/components/home/egocentric-highlight";
-import { VideoSection } from "@/components/home/video-section";
+import { AwardsRecognition } from "@/components/home/awards-recognition";
 import { PartnershipPreview } from "@/components/home/partnership-preview";
 import { ContactCta } from "@/components/shared/contact-cta";
 import { BackedBy } from "@/components/shared/backed-by";
-import { Recognition } from "@/components/shared/recognition";
-import { Section } from "@/components/ui/section";
 
 export const metadata: Metadata = {
   title: { absolute: "Mvaak — Real-World Data for the Next Generation of AI" },
@@ -18,9 +16,9 @@ export const metadata: Metadata = {
 
 /*
  * Homepage — the essentials, with detail one click away via the header menus:
- * hero → institutional backing → services → egocentric data → video → recognition →
- * partnerships → contact. The pipeline, data example and quality detail live on
- * /solutions/physical-ai; engagement models on /services.
+ * hero → institutional backing → solutions → egocentric data → awards & recognitions
+ * (video + award photos) → partnerships → contact. The pipeline, data example and
+ * quality detail live on /solutions/physical-ai; engagement models on /services.
  */
 export default function HomePage() {
   return (
@@ -31,15 +29,9 @@ export default function HomePage() {
           <BackedBy />
         </div>
       </section>
-      <WhatWeDo />
+      <SolutionsOverview />
       <EgocentricHighlight />
-      <VideoSection />
-      <Section id="recognition" labelledBy="recognition-title" tone="canvas">
-        <p id="recognition-title" className="eyebrow">
-          Recognition
-        </p>
-        <Recognition compact className="mt-6" />
-      </Section>
+      <AwardsRecognition />
       <PartnershipPreview />
       <ContactCta />
     </>

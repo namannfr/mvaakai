@@ -18,9 +18,6 @@ export function Hero() {
             <ButtonLink href="/contact" size="lg" arrow trackAs="hero_discuss_project">
               Discuss a Project
             </ButtonLink>
-            <ButtonLink href="/solutions/physical-ai#data-example" size="lg" variant="outline-light" trackAs="hero_explore_data">
-              Explore Our Data
-            </ButtonLink>
           </div>
           <p className="mt-8 text-sm text-on-navy-muted">
             For robotics &amp; Physical AI · computer vision · speech &amp; voice AI · NLP &amp; LLM data

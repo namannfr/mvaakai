@@ -78,8 +78,7 @@ export default function PrivacyPage() {
             Mvaak, {site.address.line}.{" "}
             <a href={`mailto:${site.email}`} className="text-accent underline underline-offset-2">
               {site.email}
-            </a>{" "}
-            · {site.phoneDisplay}
+            </a>
           </p>
         </section>
         <p className="mt-12">

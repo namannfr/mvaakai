@@ -38,7 +38,7 @@ On the site they appear under a neutral heading, **"Institutional support & asso
 
 ### 2a. "We are backed by" logo strip (homepage, and `/about#recognition`), must confirm
 
-The client supplied a screenshot showing six logos: IIT Kanpur · IIT Kanpur Incubation & Innovation · Startup India · IndiaAI · MeitY · JSS AHER Mysuru. These logos now appear on the site, in `src/components/shared/backed-by.tsx`, with the image files in `public/images/recognition/logo-*.png`.
+The client supplied a screenshot showing six logos: IIT Kanpur · IIT Kanpur Incubation & Innovation · Startup India · IndiaAI · MeitY · JSS AHER Mysuru. JSS was removed at the client’s request, so five logos now appear on the site, in `src/components/shared/backed-by.tsx`, with the image files in `public/images/recognition/logo-*.png`.
 
 - **The logos were cropped from that screenshot, so they are low resolution.** Replace them with the original logo files.
 - **The two sources list different backers.** The brochure lists MIT, NTU Singapore and SMU; the screenshot adds IndiaAI and JSS. Confirm which list is current.
@@ -53,9 +53,9 @@ The client supplied two photos, now in `public/images/recognition/award-ceremony
 - **To confirm:** Narottam Innovations Pvt Ltd's relationship to Mvaak (for example, the legal entity behind it), and whether the award can be presented as Mvaak's. If so, the copy can be strengthened in `src/components/shared/recognition.tsx`. If not, remove the section.
 - **Not published:** the India News screenshot. It covers TaknikAI and its founder Shivam Pal, not Mvaak, so it is not used anywhere. It can be added only if the TaknikAI–Mvaak link is confirmed and the coverage concerns Mvaak.
 
-### 2c. Video (homepage `#see-mvaak`)
+### 2c. Video (homepage "Awards & Recognitions", `#recognition`)
 
-The site embeds YouTube video `sygn0mAgeZU`, using the privacy-enhanced `youtube-nocookie.com` player, which loads lazily. The video is titled "IndiaAI Grant Support for Mvaak, Coverage by NewsStation" on the Mvaak channel, and the section heading follows that title. Confirm that the grant wording is accurate, which ties in with 2b.
+The site embeds YouTube video `sygn0mAgeZU`, using the privacy-enhanced `youtube-nocookie.com` player, which loads lazily. The video is titled "IndiaAI Grant Support for Mvaak, Coverage by NewsStation" on the Mvaak channel, and it now sits beside the award photos in the "Awards & Recognitions" section. Confirm that the grant wording is accurate, which ties in with 2b.
 
 ### 2d. Founder profile (`/about#founder`), must confirm
 
@@ -149,3 +149,43 @@ The page separates what Mvaak’s brochure describes from what still needs confi
 - **Standard deliverables.** This list comes from the brochure’s “What arrives with every episode”. Confirm it is truly standard for every project, or move items into **Optional extras**.
 - **Capture categories.** Each category ends with “Confirm during project scoping.” No camera models, frame rates, durations or capacity figures are stated.
 - **Samples.** “Request a Sample” never promises one. The page and FAQ say availability depends on the data and requirements. Decide what can actually be shared as a sample.
+
+## 10. Navigation and footer update (header, footer, homepage), to confirm
+
+- **Header:** Home · Solutions ▾ · Resources ▾ · About Us · Partner Us, followed by the Contact Us button. Services is no longer a top-level item.
+  - `/services` and `/services/egocentric-video-data` still exist and are still linked from the homepage, `/solutions/physical-ai`, the contact form and the 404 page.
+  - Neither page is in the header or footer any more. Confirm this is intended.
+- **Addresses differ across the site.** The footer shows the two supplied addresses (Sector 62, Noida, and Diksharth Center, Kanpur). The Contact page now shows only the email address, and the About page's "Where we are" section (New Delhi, Ajman and Singapore) has been removed. The Privacy notice and the structured data (`site.address`) still show Moti Nagar, New Delhi. Confirm which address is current.
+- **Legal entity.** The footer now reads "© 2026 Mvaak | All rights reserved | Narottam Innovations Pvt Ltd", which indicates that Narottam Innovations is Mvaak's legal entity. If so, the recognition wording in 2b can be strengthened, once confirmed.
+- **Privacy Policy.** The footer links to the existing `/privacy` page, which is a website privacy notice drafted from the brochure (see section 6). It still needs legal review and approval as the official Privacy Policy.
+- **"Start Here" column.** It shows only the supplied text, "Good to go".
+- **MeitY logo.** `logo-meity.png` has a mouse pointer baked in from the source screenshot. Replace it with the original logo file.
+
+## 11. Partnership application form, approval needed
+
+The six-step application has been replaced with a single-page form. It has the seven approved fields: Full Name / Business Name, Email, Phone Number, City, Country, LinkedIn Profile (optional) and Looking For (Acquiring Data / Selling Data).
+
+- **Backend.** The endpoint (`/api/partnership`) and the delivery channels (Resend, webhook and the local store) are unchanged. What changed is the payload and the lead email layout (`src/lib/forms/partnership-schema.ts`, `src/app/api/partnership/route.ts`).
+  - Any external automation that reads the webhook's `data` object and expects the old fields (team size, capabilities, commercial readiness and so on) needs updating.
+  - New records contain `fullName`, `email`, `phone`, `city`, `country`, `linkedin` and `lookingFor` (`acquiring-data` / `selling-data`).
+- **Acknowledgements.** The four checkbox acknowledgements were removed with the multi-step flow. In their place is a single line above the submit button: "By submitting, you agree that Mvaak may contact you about this application", with a link to the Privacy Policy. Confirm this is acceptable.
+- **Wording.** The "Looking For" options read as data buyers and sellers. The rest of the Partnerships page still describes field-team collaborations, so confirm the page copy and the form's purpose match.
+
+## 12. Contact form → Google Sheets, action required before it works live
+
+The Contact Us form now sends each lead to the "Contact Leads" Apps Script, through the site's server at `/api/inquiry` (`src/lib/server/contact-sheet.ts`). The visitor sees success only when the script confirms the write. Two things are needed on the Apps Script side:
+
+1. **Deployment access.** The supplied URL (originally `/a/macros/first500days.com/…/exec`, now `/macros/s/AKfycbxcQWWr…/exec`) is restricted to first500days.com accounts. Anonymous requests are redirected to Google sign-in, so website submissions cannot reach the script. Redeploy the web app with *Execute as: Me* and *Who has access: Anyone*. If that produces a new `/exec` URL, set it in `CONTACT_SHEETS_URL`.
+2. **Confirmation response.** `doPost` must return a success reply after `appendRow`, for example `ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON)`. Any other reply, such as an error page or no output, is treated as a failure.
+3. **Spreadsheet binding.** `SpreadsheetApp.getActiveSpreadsheet()` works only if the script is bound to the Contact Leads sheet (created from Extensions → Apps Script inside that sheet). If it is a standalone script, use `SpreadsheetApp.openById("<Contact Leads sheet ID>")` and select the tab by name.
+
+**Field mapping**
+
+| Script property | Contact form field |
+|---|---|
+| name | Name |
+| email | Work email |
+| company | Company |
+| jobTitle | Job title (optional) |
+| inquiryType | Request type and project type, e.g. "Discuss a project — Egocentric video & human-demonstration data" |
+| projectDetails | The description, followed by every other answered field ("Engagement model: …", "Environments: …" and so on), then the reference number and the page the lead was submitted from |

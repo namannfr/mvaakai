@@ -1,13 +1,11 @@
-import { MapPin } from "lucide-react";
 import { Section, SectionHeader } from "@/components/ui/section";
-import { ButtonLink, TextLink } from "@/components/ui/button";
+import { TextLink } from "@/components/ui/button";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
-import { Institutions } from "@/components/shared/institutions";
 import { BackedBy } from "@/components/shared/backed-by";
-import { Recognition } from "@/components/shared/recognition";
+import { AwardsRecognition } from "@/components/home/awards-recognition";
 import { ContactCta } from "@/components/shared/contact-cta";
 import { FounderProfile } from "@/components/about/founder-profile";
-import { capacity, credentials, site } from "@/config/site";
+import { capacity, credentials } from "@/config/site";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata({
@@ -147,43 +145,13 @@ export default function AboutPage() {
 
       <Section id="recognition" tone="surface" bordered labelledBy="recognition-heading">
         <SectionHeader id="recognition-heading" eyebrow="Recognition" title="Institutional support and recognition." />
-        <div data-reveal className="mt-10 rounded-card border border-line bg-canvas p-6 sm:p-8">
+        <div data-reveal className="mt-10 rounded-card border border-line bg-surface px-6 py-8 sm:px-8">
           <BackedBy />
           <p className="mt-6 border-t border-line pt-4 text-sm text-muted">Mvaak’s service materials also list MIT, NTU Singapore and SMU.</p>
         </div>
-        <Recognition className="mt-14" />
       </Section>
 
-      <Section tone="subtle" bordered labelledBy="presence-title">
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:gap-14">
-          <div>
-            <SectionHeader
-              id="presence-title"
-              eyebrow="Where we are"
-              title="Based in New Delhi. Working with AI teams anywhere."
-              lead="Headquartered in India, with a presence in the UAE and Singapore."
-            />
-            <ul className="mt-10 grid gap-4 sm:grid-cols-3">
-              {site.offices.map((o) => (
-                <li key={o.city} data-reveal className="rounded-card border border-line bg-surface p-5">
-                  <MapPin aria-hidden className="size-5 text-accent" />
-                  <p className="mt-3 font-semibold text-ink">{o.city}</p>
-                  <p className="text-sm text-muted">{o.country}</p>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href="/contact" arrow trackAs="about_discuss">
-                Discuss a Project
-              </ButtonLink>
-              <ButtonLink href="/partnerships" variant="secondary" trackAs="about_partnerships">
-                Partner with Mvaak
-              </ButtonLink>
-            </div>
-          </div>
-          <Institutions className="self-start" />
-        </div>
-      </Section>
+      <AwardsRecognition id="awards" moreLink={false} />
 
       <ContactCta />
     </>

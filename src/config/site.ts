@@ -14,8 +14,6 @@ export const site = {
   description:
     "Mvaak designs, collects, annotates and validates real-world data for AI teams — egocentric human-demonstration video for Physical AI, plus audio, video and text annotation with multi-stage quality assurance.",
   email: "team@mvaak.com",
-  phoneDisplay: "+91 73880 73490",
-  phoneHref: "tel:+917388073490",
   address: {
     line: "Moti Nagar, New Delhi 110015, India",
     locality: "New Delhi",
@@ -28,9 +26,16 @@ export const site = {
     { city: "Singapore", country: "Singapore" },
   ],
   copyrightYear: 2026,
+  /** Addresses shown in the footer, exactly as supplied by Mvaak. */
+  footerAddresses: [
+    "Sector 62, Noida, Ghaziabad, Uttar Pradesh 201309",
+    "Diksharth Center, Hanpuram, Kanpur, Uttar Pradesh, 208021",
+  ],
+  legalName: "Narottam Innovations Pvt Ltd",
   social: [
-    { name: "LinkedIn", href: "https://www.linkedin.com/company/mvaak/home/" },
-    { name: "YouTube", href: "https://youtube.com/@mvaak-ai?si=d-YpfO1lVFEIRR_f" },
+    { name: "Instagram", href: "https://instagram.com/mvaak.ai" },
+    { name: "LinkedIn", href: "https://www.linkedin.com/company/mvaak/" },
+    { name: "YouTube", href: "https://www.youtube.com/@mvaak-ai" },
   ],
 } as const;
 
@@ -89,29 +94,19 @@ export const credentials = [
  */
 export type NavLink = { label: string; href: string; description?: string };
 export type NavGroup = { label: string; items: NavLink[]; footer?: NavLink };
+export type NavEntry = NavLink | NavGroup;
+export const isNavGroup = (e: NavEntry): e is NavGroup => "items" in e;
 
-export const navGroups: NavGroup[] = [
-  {
-    label: "Services",
-    items: [
-      { label: "Egocentric Video Data Collection", href: "/services/egocentric-video-data", description: "First-person human demonstrations" },
-      { label: "Data Collection", href: "/services#data-collection", description: "Planned capture in real environments" },
-      { label: "Data Annotation", href: "/services#annotation", description: "Audio, video and text labelling" },
-      { label: "Quality Assurance", href: "/services#quality-assurance", description: "Checks and review before delivery" },
-      { label: "Annotation & Dataset Rescue", href: "/services#annotation-rescue", description: "Fix and label data you hold" },
-      { label: "Engagement Models", href: "/services#engagement-models", description: "Pilot sprint to dedicated cell" },
-    ],
-    footer: { label: "All services", href: "/services" },
-  },
-  {
-    label: "Solutions",
-    items: [
-      { label: "Robotics & Physical AI", href: "/solutions/physical-ai", description: "From real-world action to AI data" },
-      { label: "Computer Vision", href: "/services/video-annotated-data", description: "Detection, tracking, activity" },
-      { label: "Speech & Voice AI", href: "/services/audio-annotated-data", description: "Transcription and diarisation" },
-      { label: "NLP & LLM Data", href: "/services/text-annotated-data", description: "Classification, entities, intent" },
-    ],
-  },
+export const solutionLinks: NavLink[] = [
+  { label: "Robotics & Physical AI", href: "/solutions/physical-ai", description: "From real-world action to AI data" },
+  { label: "Computer Vision", href: "/services/video-annotated-data", description: "Detection, tracking, activity" },
+  { label: "Speech & Voice AI", href: "/services/audio-annotated-data", description: "Transcription and diarisation" },
+  { label: "NLP & LLM Data", href: "/services/text-annotated-data", description: "Classification, entities, intent" },
+];
+
+/** Header order: Home · Solutions ▾ · Resources ▾ · About Us · Partner Us, then the Contact Us button. */
+export const mainNav: NavEntry[] = [
+  { label: "Solutions", items: solutionLinks },
   {
     label: "Resources",
     items: [
@@ -121,13 +116,6 @@ export const navGroups: NavGroup[] = [
     ],
     footer: { label: "All articles", href: "/blog" },
   },
-  {
-    label: "About Us",
-    items: [
-      { label: "Company Overview", href: "/about", description: "Who we are and how we work" },
-      { label: "Recognition", href: "/about#recognition", description: "Institutional support and awards" },
-      { label: "Partnerships", href: "/partnerships", description: "Build real-world data projects with us" },
-      { label: "Contact", href: "/contact", description: "Start a conversation" },
-    ],
-  },
+  { label: "About Us", href: "/about" },
+  { label: "Partner Us", href: "/partnerships" },
 ];

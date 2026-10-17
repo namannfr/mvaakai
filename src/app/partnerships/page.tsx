@@ -1,13 +1,5 @@
 import {
-  Rocket,
-  Cpu,
-  Video,
   Users,
-  ClipboardCheck,
-  GraduationCap,
-  Glasses,
-  FileText,
-  Handshake,
   Clock,
   MessageSquare,
   ListChecks,
@@ -28,6 +20,7 @@ import { StickyApplyBar } from "@/components/partnerships/sticky-apply-bar";
 import { TrackView } from "@/components/analytics/track-view";
 import { PENDING_TERM_LABEL, partnershipTerms } from "@/config/partnership";
 import { pageMetadata } from "@/lib/metadata";
+import { gains, profiles, steps } from "@/content/partnership-program";
 import { site } from "@/config/site";
 
 export const metadata = pageMetadata({
@@ -38,29 +31,6 @@ export const metadata = pageMetadata({
 });
 
 const term = (key: string) => partnershipTerms.find((t) => t.key === key)?.value ?? null;
-
-const profiles = [
-  { letter: "A", icon: Rocket, title: "Early-stage startups", body: "Small companies ready to run structured data operations." },
-  { letter: "B", icon: Cpu, title: "Technical teams", body: "Hardware, software, AI, robotics or data-workflow skills." },
-  { letter: "C", icon: Video, title: "Data collection operators", body: "Able to organise real-world capture where you have access." },
-  { letter: "D", icon: Users, title: "Founding teams", body: "Able to commit time and follow a written specification." },
-];
-
-const steps = [
-  { title: "Apply", body: "Tell us about your team, skills, location and experience." },
-  { title: "Evaluation", body: "We review capacity and fit against project requirements." },
-  { title: "Discuss the terms", body: "Scope, hours, equipment, training, any costs and compensation — agreed in writing." },
-  { title: "Training & setup", body: "Onboarding and protocols. Equipment only where agreed and available." },
-  { title: "Execute", body: "Deliver to Mvaak’s specifications and quality requirements." },
-  { title: "Review & grow", body: "Work is assessed against agreed criteria. Further work may follow." },
-];
-
-const gains = [
-  { icon: Glasses, title: "Equipment access", body: "Capture devices may be provided where agreed and available." },
-  { icon: GraduationCap, title: "Practical training", body: "Learn the agreed workflow before work begins." },
-  { icon: FileText, title: "Clear specifications", body: "Documented tasks, deliverables and quality criteria." },
-  { icon: Handshake, title: "Future opportunities", body: "Partners who deliver well may be considered for more work." },
-];
 
 const responsibilities = [
   { icon: Users, text: "A committed team with defined roles" },
@@ -363,33 +333,14 @@ export default function PartnershipsPage() {
 
       {/* 6.7 Application */}
       <Section id="apply" tone="subtle" labelledBy="apply-title" className="scroll-mt-16">
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,0.65fr)_minmax(0,1.35fr)] lg:gap-14">
-          <div className="lg:sticky lg:top-28 lg:self-start">
-            <SectionHeader
-              id="apply-title"
-              eyebrow="Partnership application"
-              title="Apply to partner."
-              lead="Six short steps, about ten minutes. Applying is free."
-            />
-            <div data-reveal className="mt-8 rounded-card border border-line bg-surface p-5">
-              <h3 className="font-mono text-xs tracking-[0.14em] text-faint uppercase">Useful to have ready</h3>
-              <ul className="mt-4 space-y-2.5 text-[0.9375rem] text-ink-2">
-                {[
-                  "Who is on the team and their roles",
-                  "Equipment you already own",
-                  "Environments and locations you can access",
-                  "Realistic weekly hours and a start date",
-                  "A link to past work, if you have one",
-                ].map((t) => (
-                  <li key={t} className="flex gap-3">
-                    <ClipboardCheck aria-hidden className="mt-0.5 size-4 shrink-0 text-accent" />
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          <div>
+        <div className="mx-auto max-w-3xl">
+          <SectionHeader
+            id="apply-title"
+            eyebrow="Partnership application"
+            title="Apply to Partner"
+            lead="Share your details to connect with Mvaak. We review every application and get in touch if there is a fit. Applying is free and does not guarantee acceptance or work."
+          />
+          <div className="mt-10">
             <PartnershipForm />
           </div>
         </div>

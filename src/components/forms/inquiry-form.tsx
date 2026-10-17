@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { CheckCircle2, Loader2, Mail, Send } from "lucide-react";
+import { AlertTriangle, CheckCircle2, CircleX, Loader2, Send } from "lucide-react";
 import { projectTypes } from "@/content/services";
 import {
   annotationLayerOptions,
@@ -11,7 +11,6 @@ import {
   requestTypes,
   environments,
   inquirySchema,
-  labelFor,
   modalities,
   timelines,
 } from "@/lib/forms/inquiry-schema";
@@ -19,8 +18,25 @@ import { track } from "@/lib/analytics";
 import { site } from "@/config/site";
 import { buttonClass } from "@/components/ui/button";
 import { ChoiceGroup, ConsentCheckbox, FormGroup, Honeypot, SelectField, TextAreaField, TextField } from "./fields";
-import { EmailHandoff, SubmitError } from "./form-alerts";
-import { isTruncated, mailtoHref, openEmail, summaryText, useDeliveryStatus, useSubmission } from "./use-submission";
+import { useSubmission, type SubmitState } from "./use-submission";
+
+/** Contact-form error banner: plain wording, no internal details, never an email-app fallback. */
+function ContactSubmitError({ state }: { state: SubmitState }) {
+  if (state.status !== "error") return null;
+  const validation = state.kind === "validation";
+  const message = validation
+    ? "Some details need attention. Please review the highlighted fields and try again."
+    : state.kind === "rate_limited"
+      ? "Too many attempts in a short time. Please wait a few minutes and try again."
+      : "We couldn’t submit your enquiry. Please try again.";
+  const Icon = validation ? AlertTriangle : CircleX;
+  return (
+    <div role="alert" className="flex gap-3 rounded-xl border border-danger/25 bg-danger-soft p-4 text-[0.9375rem] leading-relaxed">
+      <Icon aria-hidden className="mt-0.5 size-5 shrink-0 text-danger" />
+      <p className="font-medium text-ink">{message}</p>
+    </div>
+  );
+}
 
 type FormValues = {
   name: string;
@@ -91,13 +107,9 @@ export function InquiryForm() {
   const params = useSearchParams();
   const [values, setValues] = useState<FormValues>(() => initialValues(params));
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [handedOff, setHandedOff] = useState(false);
   const started = useRef(false);
   const formRef = useRef<HTMLFormElement>(null);
-  const live = useDeliveryStatus();
   const { state, submit } = useSubmission("/api/inquiry");
-  /** Online delivery is unavailable on this deployment: the form continues by email instead. */
-  const emailMode = live === false;
 
   const set = <K extends keyof FormValues>(key: K, value: FormValues[K]) => {
     setValues((v) => ({ ...v, [key]: value }));
@@ -125,29 +137,6 @@ export function InquiryForm() {
   const showEnvironments = COLLECTS_IN_FIELD.includes(values.projectType);
   const showExistingData = HOLDS_DATA.includes(values.projectType);
   const isEgo = values.projectType === "egocentric-video";
-
-  const lines: [string, string][] = [
-    ["Name", values.name],
-    ["Work email", values.email],
-    ["Company", values.company],
-    ["Job title", values.jobTitle],
-    ["Project type", labelFor(projectTypes, values.projectType)],
-    ["Engagement model", labelFor(engagementOptions, values.engagementModel)],
-    ["Modalities", values.modalities.map((m) => labelFor(modalities, m)).join(", ")],
-    ["Environments", showEnvironments ? values.environments.map((e) => labelFor(environments, e)).join(", ") : ""],
-    ["Task families", showEnvironments ? values.taskFamilies : ""],
-    ["Intended AI application", isEgo ? values.aiApplication : ""],
-    ["Annotation layers", isEgo ? values.annotationLayers.map((a) => labelFor(annotationLayerOptions, a)).join(", ") : ""],
-    ["Delivery format", isEgo ? values.deliveryFormat : ""],
-    ["Data already held", showExistingData ? values.existingData : ""],
-    ["Project description", values.description],
-    ["Expected scale", values.scale],
-    ["Timeline", values.timeline ? labelFor(timelines, values.timeline) : ""],
-    ["Additional requirements", values.requirements],
-    ["Specification link", values.specUrl],
-  ];
-  const subject = `${values.requestType === "sample" ? "Sample request" : "Project inquiry"} — ${values.company || values.name || "Mvaak website"}`;
-  const mailto = mailtoHref(site.email, subject, lines);
 
   function validate(payload: Record<string, unknown>) {
     const parsed = inquirySchema.safeParse({ ...payload, submissionId: "client-validation" });
@@ -179,58 +168,35 @@ export function InquiryForm() {
     };
     if (!validate(payload)) return;
 
-    if (emailMode) {
-      track("project_inquiry_submitted", { project_type: values.projectType, channel: "email_handoff" });
-      openEmail(mailto);
-      setHandedOff(true);
-      return;
-    }
-
+    // Submitted to /api/inquiry, which writes to the Contact Leads sheet and reports success
+    // only once the sheet confirms the write.
     const result = await submit(payload);
     if (result.status === "success") {
       track("project_inquiry_submitted", { project_type: values.projectType, engagement_model: values.engagementModel });
+      setValues(initialValues(params));
     } else if (result.status === "error") {
       track("form_submission_failed", { form: "inquiry", reason: result.kind });
+      if (process.env.NODE_ENV !== "production") console.warn("[contact form] submission failed:", result.kind);
       if (result.kind === "validation" && result.fieldErrors) setErrors(result.fieldErrors);
     }
   }
 
-  if (handedOff) {
-    return (
-      <EmailHandoff
-        title="Finish sending your inquiry"
-        mailto={mailto}
-        summary={summaryText(lines)}
-        truncated={isTruncated(lines)}
-        onBack={() => setHandedOff(false)}
-      />
-    );
-  }
-
   if (state.status === "success") {
     return (
-      <div ref={successRef} tabIndex={-1} role="status" className="scroll-mt-28 rounded-card border border-line bg-surface p-6 outline-none sm:p-10">
-        <CheckCircle2 aria-hidden className="size-10 text-success" />
-        <h2 className="mt-5 text-2xl font-semibold tracking-tight text-ink">Thank you — your inquiry has been received.</h2>
-        <p className="mt-3 max-w-xl leading-relaxed text-muted">
-          We’ll review your requirements and reply to <span className="font-medium text-ink">{values.email}</span>, usually with a
-          few clarifying questions or a proposed next step. If something is urgent, email{" "}
-          <a href={`mailto:${site.email}`} className="text-accent underline underline-offset-2">
-            {site.email}
-          </a>{" "}
-          and quote your reference.
+      <div
+        ref={successRef}
+        tabIndex={-1}
+        role="status"
+        aria-live="polite"
+        className="scroll-mt-28 rounded-card border border-accent-line bg-accent-soft p-6 outline-none sm:p-10"
+      >
+        <CheckCircle2 aria-hidden className="size-10 text-accent" />
+        <p className="mt-5 max-w-xl text-xl leading-snug font-semibold text-pretty text-ink sm:text-2xl">
+          Thank you for contacting Mvaak! Your form has been submitted successfully. Our team will review your enquiry.
         </p>
-        <p className="mt-6 inline-flex rounded-lg border border-line bg-subtle px-3 py-2 font-mono text-sm text-ink-2">
+        <p className="mt-6 inline-flex rounded-lg border border-accent-line bg-surface px-3 py-2 font-mono text-sm text-ink-2">
           Reference: {state.reference}
         </p>
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <Link href="/services/egocentric-video-data" className={buttonClass("secondary")}>
-            Explore egocentric data
-          </Link>
-          <Link href="/blog" className={buttonClass("ghost")}>
-            Read our insights
-          </Link>
-        </div>
       </div>
     );
   }
@@ -440,38 +406,28 @@ export function InquiryForm() {
           .
         </ConsentCheckbox>
         <Honeypot value={values.website} onChange={(v) => set("website", v)} />
-        <SubmitError state={state} mailto={mailto} />
+        <ContactSubmitError state={state} />
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <button type="submit" disabled={submitting} className={buttonClass("primary", "lg", "w-full sm:w-auto sm:shrink-0 sm:whitespace-nowrap")}>
             {submitting ? (
               <>
-                <Loader2 aria-hidden className="size-4 animate-spin" /> Sending…
-              </>
-            ) : emailMode ? (
-              <>
-                <Mail aria-hidden className="size-4" /> Continue in your email app
+                <Loader2 aria-hidden className="size-4 animate-spin" /> Submitting...
               </>
             ) : (
               <>
-                Send inquiry <Send aria-hidden className="size-4" />
+                Submit Form <Send aria-hidden className="size-4" />
               </>
             )}
           </button>
           <p className="text-sm text-muted sm:text-right">
-            {emailMode ? (
-              <>Opens a pre-filled email to {site.email} — it’s sent when you press send.</>
-            ) : (
-              <>
-                Prefer email?{" "}
-                <a href={`mailto:${site.email}`} className="text-accent underline underline-offset-2">
-                  {site.email}
-                </a>
-              </>
-            )}
+            Prefer email?{" "}
+            <a href={`mailto:${site.email}`} className="text-accent underline underline-offset-2">
+              {site.email}
+            </a>
           </p>
         </div>
         <p aria-live="polite" className="sr-only">
-          {submitting ? "Sending your inquiry" : ""}
+          {submitting ? "Submitting your enquiry" : ""}
         </p>
       </div>
     </form>

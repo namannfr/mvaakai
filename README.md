@@ -33,7 +33,7 @@ npm run build && npm start      # production build on http://localhost:3000
 | `/services/egocentric-video-data` | Egocentric / Physical AI page (existing URL kept) |
 | `/solutions/physical-ai` | Robotics & Physical AI: the pipeline, a real data example, quality checks and who we serve |
 | `/services/audio-annotated-data`, `/video-annotated-data`, `/text-annotated-data` | Existing URLs kept, with the original copy |
-| `/partnerships` | Partnerships programme and six-step application (`#apply`) |
+| `/partnerships` | Partnerships programme and single-page application form (`#apply`) |
 | `/about` | Company page |
 | `/blog`, `/blog/<slug>` | Insights. All 9 existing articles kept at their original URLs and dates |
 | `/contact` | Project inquiry. Pre-fill with `?type=<project-type>&model=<engagement-model>` |
@@ -41,7 +41,7 @@ npm run build && npm start      # production build on http://localhost:3000
 | `/api/inquiry`, `/api/partnership` | Form endpoints (POST) |
 | `/api/forms/status` | Reports whether a delivery channel is configured (no secrets) |
 
-The header dropdowns (Services, Solutions, Resources and About Us) and the footer are driven by `navGroups` in `src/config/site.ts`. Only link to pages and anchors that exist.
+The header (`mainNav`: Solutions and Resources dropdowns, plus About Us and Partner Us links) and the footer Solutions column (`solutionLinks`) are driven by `src/config/site.ts`. Only link to pages and anchors that exist.
 
 Redirects (in `next.config.ts`): `/insights` → `/blog`, `/services/egocentric-video` → `/services/egocentric-video-data`, `/partners` → `/partnerships`, `/apply` → `/partnerships#apply`, and similar. Unknown blog or service slugs return a real 404 (see `src/proxy.ts`).
 
