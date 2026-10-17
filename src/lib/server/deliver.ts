@@ -7,14 +7,14 @@
  *   2. Webhook (CRM, Sheets…)  LEADS_WEBHOOK_URL (+ optional LEADS_WEBHOOK_SECRET)
  *   3. Local JSONL file        LEADS_LOCAL_DIR — for local development and
  *                              self-hosted servers with persistent disks only.
- *   4. Google Sheets           Contact Us leads only (see contact-sheet.ts). When enabled it
- *                              is the record of truth: the lead succeeds only if the sheet
- *                              confirms the write, and the other channels then run as copies.
+ *   4. Google Sheets           Per form, via Apps Script (see lead-sheets.ts). When a form has
+ *                              an endpoint it is the record of truth: the lead succeeds only if
+ *                              the sheet confirms the write; the other channels then run as copies.
  */
 import { createHmac } from "node:crypto";
 import { appendFile, mkdir } from "node:fs/promises";
 import path from "node:path";
-import { appendContactLead, contactSheetUrl, type ContactSheetRow } from "./contact-sheet";
+import { appendSheetRow, sheetUrl, type SheetRow } from "./lead-sheets";
 
 export type LeadKind = "inquiry" | "partnership";
 
@@ -27,8 +27,8 @@ export type Lead = {
   sections: { heading: string; rows: [string, string][] }[];
   /** Validated payload, forwarded as-is to webhooks and the local store. */
   data: Record<string, unknown>;
-  /** Contact Us leads: the row sent to the Contact Leads spreadsheet. */
-  sheet?: ContactSheetRow;
+  /** Row sent to this form's Google Sheet, when one is configured. */
+  sheet?: SheetRow;
 };
 
 type Channel = "email" | "webhook" | "local";
@@ -36,7 +36,7 @@ type Delivered = Channel | "sheets";
 
 const env = (k: string) => process.env[k]?.trim() || undefined;
 
-/** Channels other than Google Sheets (which applies to Contact Us leads only). */
+/** Channels other than Google Sheets (which is configured per form in lead-sheets.ts). */
 export function configuredChannels(): Channel[] {
   const channels: Channel[] = [];
   if (env("RESEND_API_KEY") && env("LEADS_FROM_EMAIL")) channels.push("email");
@@ -130,12 +130,12 @@ export type DeliveryResult =
 
 export async function deliverLead(lead: Lead, submittedAt: string): Promise<DeliveryResult> {
   const channels = configuredChannels();
-  const useSheet = !!lead.sheet && !!contactSheetUrl();
+  const useSheet = !!lead.sheet && !!sheetUrl(lead.kind);
   if (channels.length === 0 && !useSheet) return { status: "not_configured" };
 
   if (useSheet) {
     try {
-      await appendContactLead(lead.sheet!);
+      await appendSheetRow(lead.kind, lead.sheet!);
     } catch (e) {
       const error = `sheets: ${e instanceof Error ? e.message : String(e)}`;
       console.error(`[leads] ${lead.kind} ${lead.id} delivery errors:`, [error]);

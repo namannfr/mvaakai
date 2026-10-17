@@ -1,33 +1,42 @@
 /**
- * Server-only: forwards Contact Us leads to the Google Apps Script "Contact Leads" web app,
- * which appends them to the Contact Leads spreadsheet. Never import from a client component.
+ * Server-only: forwards leads to Google Apps Script web apps that append them to Google Sheets.
+ * Never import from a client component.
  *
- * Why server-side: the Apps Script web app does not answer CORS preflights, so browsers
- * cannot read its response — and an unreadable response cannot confirm a write. From the
- * server we can follow Google's redirect and read what the script actually returned.
+ *   Contact Us form   → "Contact Leads" script      CONTACT_SHEETS_URL     (default below)
+ *   Partnership form  → "Partnerships" script       PARTNERSHIP_SHEETS_URL (default below)
+ *
+ * Why server-side: Apps Script web apps do not answer CORS preflights, so browsers cannot
+ * read their response — and an unreadable response cannot confirm a write. From the
+ * server we follow Google's redirect and read what the script actually returned.
  *
  * Success is reported ONLY when the script's response says so, e.g. {"status":"success"},
  * {"result":"success"}, {"ok":true} or a plain-text "success". A Google sign-in page,
  * a script error page, a non-2xx status or a timeout all count as failure.
  */
+import type { LeadKind } from "./deliver";
 
-/** Contact Leads endpoint supplied by Mvaak. Override with CONTACT_SHEETS_URL; set it to "off" to disable. */
+/** Contact Leads endpoint supplied by Mvaak (public deployment, verified with a live test row). */
 const DEFAULT_CONTACT_SHEETS_URL =
-  "https://script.google.com/macros/s/AKfycbxcQWWr_8869W1m0KrxF16VcSHthCMW_Yid1FeWPecps4XVtVenYMktyU4D5-lJ2IA0rw/exec";
+  "https://script.google.com/macros/s/AKfycbyenulaOIKX8UX8xmS-jcRRBpI0Wm72MtfzOXKnKDwtPe2Z2njBN7nM-MBMlT9Hr3I5/exec";
 
-export type ContactSheetRow = {
-  name: string;
-  email: string;
-  company: string;
-  jobTitle: string;
-  inquiryType: string;
-  projectDetails: string;
+/** Partnerships endpoint supplied by Mvaak (public deployment). */
+const DEFAULT_PARTNERSHIP_SHEETS_URL =
+  "https://script.google.com/macros/s/AKfycbzZYx0LxS2bhx9S4tza3hZuhsAIE83245nzBnA40bynLpOBeynJHHf58ndxu2i-m6qe/exec";
+
+const ENDPOINTS: Record<LeadKind, { env: string; fallback?: string }> = {
+  inquiry: { env: "CONTACT_SHEETS_URL", fallback: DEFAULT_CONTACT_SHEETS_URL },
+  partnership: { env: "PARTNERSHIP_SHEETS_URL", fallback: DEFAULT_PARTNERSHIP_SHEETS_URL },
 };
 
-export function contactSheetUrl(): string | undefined {
-  const v = process.env.CONTACT_SHEETS_URL?.trim();
+/** Row sent to the script — flat string properties the script reads by name. */
+export type SheetRow = Record<string, string>;
+
+/** The endpoint for a form, or undefined when none is set (or it is set to "off"). */
+export function sheetUrl(kind: LeadKind): string | undefined {
+  const { env, fallback } = ENDPOINTS[kind];
+  const v = process.env[env]?.trim();
   if (v?.toLowerCase() === "off") return undefined;
-  return v || DEFAULT_CONTACT_SHEETS_URL;
+  return v || fallback;
 }
 
 const SUCCESS = new Set(["success", "ok", "saved", "created"]);
@@ -66,9 +75,9 @@ function describe(res: Response, body: string) {
   return `unconfirmed response (status ${res.status}, ${type}, ${body.length} bytes)`;
 }
 
-export async function appendContactLead(row: ContactSheetRow): Promise<void> {
-  const url = contactSheetUrl();
-  if (!url) throw new Error("Contact sheet endpoint is disabled");
+export async function appendSheetRow(kind: LeadKind, row: SheetRow): Promise<void> {
+  const url = sheetUrl(kind);
+  if (!url) throw new Error(`No sheet endpoint configured for ${kind}`);
   const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

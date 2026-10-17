@@ -27,6 +27,17 @@ export async function POST(request: Request) {
         },
       ],
       data: { ...d, website: undefined },
+      // Partnership Leads spreadsheet (Apps Script payload), used once PARTNERSHIP_SHEETS_URL is set.
+      sheet: {
+        name: d.fullName,
+        email: d.email,
+        phone: d.phone,
+        city: d.city,
+        country: d.country,
+        linkedin: d.linkedin ?? "",
+        lookingFor: labelFor(lookingForOptions, d.lookingFor),
+        reference,
+      },
     }),
   });
 }

@@ -2,15 +2,13 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { CheckCircle2, Loader2, Mail, Send } from "lucide-react";
+import { CheckCircle2, Loader2, Send } from "lucide-react";
 import { lookingForOptions, partnershipFields } from "@/lib/forms/partnership-schema";
-import { labelFor } from "@/lib/forms/inquiry-schema";
 import { track } from "@/lib/analytics";
-import { site } from "@/config/site";
 import { buttonClass } from "@/components/ui/button";
 import { Honeypot, SelectField, TextField } from "./fields";
-import { EmailHandoff, SubmitError } from "./form-alerts";
-import { isTruncated, mailtoHref, openEmail, summaryText, useDeliveryStatus, useSubmission } from "./use-submission";
+import { FormSubmitError } from "./form-alerts";
+import { useSubmission } from "./use-submission";
 
 type Values = {
   fullName: string;
@@ -32,10 +30,6 @@ export function PartnershipForm() {
   const started = useRef(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const successRef = useRef<HTMLHeadingElement>(null);
-  const live = useDeliveryStatus();
-  /** Online delivery is unavailable on this deployment: submitting continues by email instead. */
-  const emailMode = live === false;
-  const [handedOff, setHandedOff] = useState(false);
   const { state, submit } = useSubmission("/api/partnership");
   const submitting = state.status === "submitting";
 
@@ -66,17 +60,6 @@ export function PartnershipForm() {
     requestAnimationFrame(() => rootRef.current?.querySelector<HTMLElement>(`#f-${Object.keys(next)[0]}`)?.focus());
   };
 
-  const lines: [string, string][] = [
-    ["Full name / business name", values.fullName],
-    ["Email", values.email],
-    ["Phone", values.phone],
-    ["City", values.city],
-    ["Country", values.country],
-    ["LinkedIn", values.linkedin],
-    ["Looking for", values.lookingFor ? labelFor(lookingForOptions, values.lookingFor) : ""],
-  ];
-  const mailto = mailtoHref(site.email, `Partnership application — ${values.fullName || "Mvaak website"}`, lines);
-
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     if (submitting) return;
@@ -91,47 +74,32 @@ export function PartnershipForm() {
       return;
     }
     setErrors({});
-    if (emailMode) {
-      track("partnership_application_submitted", { looking_for: values.lookingFor, channel: "email_handoff" });
-      openEmail(mailto);
-      setHandedOff(true);
-      return;
-    }
+    // Submitted to /api/partnership, which reports success only once delivery is confirmed
+    // (the Partnership Leads sheet, when configured).
     const result = await submit(values);
     if (result.status === "success") {
       track("partnership_application_submitted", { looking_for: values.lookingFor });
+      setValues(EMPTY);
     } else if (result.status === "error") {
       track("form_submission_failed", { form: "partnership", reason: result.kind });
+      if (process.env.NODE_ENV !== "production") console.warn("[partnership form] submission failed:", result.kind);
       if (result.kind === "validation" && result.fieldErrors) showErrors(result.fieldErrors);
     }
   }
 
-  if (handedOff) {
-    return (
-      <EmailHandoff
-        title="Finish sending your application"
-        mailto={mailto}
-        summary={summaryText(lines)}
-        truncated={isTruncated(lines)}
-        onBack={() => setHandedOff(false)}
-      />
-    );
-  }
-
   if (state.status === "success") {
     return (
-      <div ref={rootRef} role="status" className="scroll-mt-24 rounded-card border border-line bg-surface p-8 sm:p-10">
-        <CheckCircle2 aria-hidden className="size-11 text-success" />
-        <h3 ref={successRef} tabIndex={-1} className="mt-6 text-h2 font-semibold text-ink outline-none">
-          Application received.
+      <div
+        ref={rootRef}
+        role="status"
+        aria-live="polite"
+        className="scroll-mt-24 rounded-card border border-accent-line bg-accent-soft p-6 sm:p-10"
+      >
+        <CheckCircle2 aria-hidden className="size-10 text-accent" />
+        <h3 ref={successRef} tabIndex={-1} className="mt-5 max-w-xl text-xl leading-snug font-semibold text-pretty text-ink outline-none sm:text-2xl">
+          Thank you for applying to partner with Mvaak! Your application has been submitted successfully. Our team will review
+          your details.
         </h3>
-        <p className="mt-4 max-w-2xl text-lead text-muted">
-          Thank you for your interest in partnering with Mvaak. Our team will review your details and get in touch if there is a
-          fit.
-        </p>
-        <p className="mt-6 inline-flex rounded-lg border border-line bg-subtle px-3 py-2 font-mono text-sm text-ink-2">
-          Reference: {state.reference}
-        </p>
         <p className="mt-6 max-w-2xl text-[0.9375rem] leading-relaxed text-muted">
           Submitting an application does not guarantee acceptance or a project. Any collaboration is agreed in writing first.
         </p>
@@ -233,12 +201,7 @@ export function PartnershipForm() {
         <Honeypot value={values.website} onChange={(v) => set("website", v)} />
 
         <div className="mt-8 space-y-4 border-t border-line pt-6">
-          <SubmitError state={state} mailto={mailto} />
-          {emailMode && (
-            <p className="text-sm text-muted">
-              This opens a pre-filled email to {site.email} in your mail app — your application is sent when you press send.
-            </p>
-          )}
+          <FormSubmitError state={state} noun="application" />
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-muted">
               By submitting, you agree that Mvaak may contact you about this application. See our{" "}
@@ -250,15 +213,11 @@ export function PartnershipForm() {
             <button type="submit" disabled={submitting} className={buttonClass("primary", "lg", "w-full sm:w-auto sm:shrink-0")}>
               {submitting ? (
                 <>
-                  <Loader2 aria-hidden className="size-4 animate-spin" /> Submitting…
-                </>
-              ) : emailMode ? (
-                <>
-                  <Mail aria-hidden className="size-4" /> Continue in your email app
+                  <Loader2 aria-hidden className="size-4 animate-spin" /> Submitting...
                 </>
               ) : (
                 <>
-                  Submit Application <Send aria-hidden className="size-4" />
+                  Submit Form <Send aria-hidden className="size-4" />
                 </>
               )}
             </button>

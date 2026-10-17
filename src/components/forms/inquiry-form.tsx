@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { AlertTriangle, CheckCircle2, CircleX, Loader2, Send } from "lucide-react";
+import { CheckCircle2, Loader2, Send } from "lucide-react";
 import { projectTypes } from "@/content/services";
 import {
   annotationLayerOptions,
@@ -18,25 +18,8 @@ import { track } from "@/lib/analytics";
 import { site } from "@/config/site";
 import { buttonClass } from "@/components/ui/button";
 import { ChoiceGroup, ConsentCheckbox, FormGroup, Honeypot, SelectField, TextAreaField, TextField } from "./fields";
-import { useSubmission, type SubmitState } from "./use-submission";
-
-/** Contact-form error banner: plain wording, no internal details, never an email-app fallback. */
-function ContactSubmitError({ state }: { state: SubmitState }) {
-  if (state.status !== "error") return null;
-  const validation = state.kind === "validation";
-  const message = validation
-    ? "Some details need attention. Please review the highlighted fields and try again."
-    : state.kind === "rate_limited"
-      ? "Too many attempts in a short time. Please wait a few minutes and try again."
-      : "We couldn’t submit your enquiry. Please try again.";
-  const Icon = validation ? AlertTriangle : CircleX;
-  return (
-    <div role="alert" className="flex gap-3 rounded-xl border border-danger/25 bg-danger-soft p-4 text-[0.9375rem] leading-relaxed">
-      <Icon aria-hidden className="mt-0.5 size-5 shrink-0 text-danger" />
-      <p className="font-medium text-ink">{message}</p>
-    </div>
-  );
-}
+import { FormSubmitError } from "./form-alerts";
+import { useSubmission } from "./use-submission";
 
 type FormValues = {
   name: string;
@@ -193,9 +176,6 @@ export function InquiryForm() {
         <CheckCircle2 aria-hidden className="size-10 text-accent" />
         <p className="mt-5 max-w-xl text-xl leading-snug font-semibold text-pretty text-ink sm:text-2xl">
           Thank you for contacting Mvaak! Your form has been submitted successfully. Our team will review your enquiry.
-        </p>
-        <p className="mt-6 inline-flex rounded-lg border border-accent-line bg-surface px-3 py-2 font-mono text-sm text-ink-2">
-          Reference: {state.reference}
         </p>
       </div>
     );
@@ -406,7 +386,7 @@ export function InquiryForm() {
           .
         </ConsentCheckbox>
         <Honeypot value={values.website} onChange={(v) => set("website", v)} />
-        <ContactSubmitError state={state} />
+        <FormSubmitError state={state} noun="enquiry" />
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <button type="submit" disabled={submitting} className={buttonClass("primary", "lg", "w-full sm:w-auto sm:shrink-0 sm:whitespace-nowrap")}>
             {submitting ? (
